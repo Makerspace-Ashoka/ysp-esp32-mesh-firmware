@@ -16,10 +16,10 @@
 #define BLINK_PERIOD 3000
 #define BLINK_DURATION 100
 
-#define MESH_SSID "whateverYouLike1"
-#define MESH_PASSWORD "somethingSneaky1"
+#define MESH_SSID "whateverYouLike"
+#define MESH_PASSWORD "somethingSneaky"
 #define MESH_PORT 5555
-#define VERSION "1.2.1"
+#define VERSION "1.2.2"
 DynamicJsonDocument doc(1024);
 NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> strip(NUM_LEDS, LED_PIN);
 // Prototypes
@@ -122,6 +122,7 @@ void processSerialInput()
       {
         cipher_text += words[i] + " ";
       }
+      cipher_text.trim();
       doc["msg"] = cipher_text;
       doc["to"] = ulong;
       doc["HEX"] = words[2];

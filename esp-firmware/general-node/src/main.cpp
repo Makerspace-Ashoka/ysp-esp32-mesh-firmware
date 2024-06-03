@@ -4,6 +4,8 @@
 #include <string>
 #include <sstream>
 #include <NeoPixelBus.h>
+#include "mesh.hpp"
+
 #ifdef LED_BUILTIN
 #define LED LED_BUILTIN
 #else

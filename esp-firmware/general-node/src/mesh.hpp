@@ -4,6 +4,8 @@
 #include <vector>
 #include <sstream>
 
+using namespace std;
+
 /*
  * This struct is used to pass the mesh configuration
  */
@@ -62,6 +64,10 @@ private:
     painlessMesh mesh;
 
 public:
+    /*
+     * The node ID of the mesh network
+     */
+    uint32_t nodeId;
     Mesh(MeshConfig config);
     void init();
 
@@ -84,14 +90,14 @@ public:
 
     /*
      * This function returns the path to a specific node in the mesh network
-     * @param endnode: The destination node
+     * @param endNode: The destination node
      * @return: A vector containing the path to the destination node
      */
-    std::vector<uint32_t> getPathToNode(uint32_t endnode);
+    vector<uint32_t> getPathToNode(uint32_t endNode);
 
     /*
      * This function sets a callback function to be called when a message is received
      * @param callback: The callback function to be called when a message is received
      */
-    void onMessageReceived(std::function<void(uint32_t, String &)> callback);
+    void onReceive(void (*callback)(uint32_t, String &));
 };

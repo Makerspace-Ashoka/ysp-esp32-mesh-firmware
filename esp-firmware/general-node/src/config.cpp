@@ -18,3 +18,13 @@ NodeConfig::NodeConfig(String ssid, String password, uint16_t port = 555, bool i
     this->light_config.led_count = led_count;
     this->light_config.led_pin = led_pin;
 }
+
+void NodeConfig::setNodeId(uint32_t node_id)
+{
+    this->node_id = node_id;
+}
+
+uint32_t NodeConfig::getNodeId()
+{
+    return this->node_id;
+}

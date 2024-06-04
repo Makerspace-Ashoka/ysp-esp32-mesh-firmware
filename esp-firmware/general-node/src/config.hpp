@@ -22,6 +22,8 @@
             * Description (optional)
 */
 
+#pragma once
+
 #include <Arduino.h>
 #include <string.h>
 #include <painlessMesh.h>
@@ -98,6 +100,7 @@ public:
 class NodeConfig
 {
 public:
+    uint32_t node_id;
     /*
      * Version Number of the Program
      * TODO: AutoGenerate
@@ -124,6 +127,8 @@ public:
      */
     SerialConfig serial_config;
 
+    void setNodeId(uint32_t node_id);
+    uint32_t getNodeId();
     // Constructor
     NodeConfig(String ssid, String password, uint16_t port = 555, bool isRoot = false, Scheduler *scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial *serial, String version);
 };

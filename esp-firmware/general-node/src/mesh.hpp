@@ -3,44 +3,16 @@
 #include <Arduino.h>
 #include <vector>
 #include <sstream>
+#include <config.hpp>
 
 using namespace std;
 
 /*
- * This struct is used to pass the mesh configuration
+ * This class is used to pass the message
  */
-struct MeshConfig
+class MessageParams
 {
-    /*
-     * The SSID of the mesh network
-     */
-    const char *ssid;
-
-    /*
-     * The password of the mesh network
-     */
-    const char *password;
-
-    /*
-     * The port of the mesh network
-     */
-    uint16_t port;
-    /*
-     * Whether the mesh network contains a root node
-     */
-    bool containsRoot;
-
-    /*
-     * Scheduler Instance to be used by the mesh network
-     */
-    Scheduler *scheduler;
-};
-
-/*
- * This struct is used to pass the message
- */
-struct MessageParams
-{
+public:
     /*
      * The destination node
      */
@@ -67,8 +39,6 @@ public:
     /*
      * The node ID of the mesh network
      */
-    uint32_t nodeId;
-    Mesh(MeshConfig config);
     void init();
 
     /*
@@ -78,7 +48,7 @@ public:
 
     /*
      * This function sends a message to a specific node or to all nodes in the mesh network
-     * @param params: MessageParams struct containing the message to be sent, the destination node and whether the message is a broadcast
+     * @param params: MessageParams class containing the message to be sent, the destination node and whether the message is a broadcast
      */
     void sendMessage(MessageParams params);
 
@@ -100,4 +70,9 @@ public:
      * @param callback: The callback function to be called when a message is received
      */
     void onReceive(void (*callback)(uint32_t, String &));
+
+    /*
+     * Constructor
+     */
+    Mesh(NodeConfig *node_config);
 };

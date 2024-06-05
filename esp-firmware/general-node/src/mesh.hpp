@@ -35,44 +35,51 @@ private:
     MeshConfig config;
     painlessMesh mesh;
 
+    vector<uint32_t> pathFinder (painlessmesh::protocol::NodeTree &node, uint32_t end_node);
+
 public:
-    /*
-     * The node ID of the mesh network
+    /**
+     * @brief The node ID of the mesh network
      */
     void init();
 
-    /*
-     * This function should be called in the main loop of the program to keep the mesh network running
+    /**
+     * @brief This function should be called in the main loop of the program to keep the mesh network running
      */
     void loop();
 
-    /*
-     * This function sends a message to a specific node or to all nodes in the mesh network
+    /**
+     * @brief This function sends a message to a specific node or to all nodes in the mesh network
      * @param params: MessageParams class containing the message to be sent, the destination node and whether the message is a broadcast
      */
     void sendMessage(MessageParams params);
 
-    /*
-     * This function returns the topology of the mesh network
-     * @return: The topology of the mesh network in JSON format
+    /**
+     * @brief Get the Topology object
+     * 
+     * Get the topology for the current mesh network. 
+     * 
+     * @return JsonDocument topology of the mesh network. 
      */
     JsonDocument getTopology();
 
-    /*
-     * This function returns the path to a specific node in the mesh network
+    /**
+     * @brief This function returns the path to a specific node in the mesh network
      * @param endNode: The destination node
      * @return: A vector containing the path to the destination node
      */
     vector<uint32_t> getPathToNode(uint32_t endNode);
 
-    /*
-     * This function sets a callback function to be called when a message is received
+    /**
+     * @brief This function sets a callback function to be called when a message is received
      * @param callback: The callback function to be called when a message is received
      */
     void onReceive(void (*callback)(uint32_t, String &));
 
-    /*
-     * Constructor
+    /**
+     * @brief Construct a new Mesh object
+     * 
+     * @param node_config 
      */
-    Mesh(NodeConfig *node_config);
+    Mesh(NodeConfig &node_config);
 };

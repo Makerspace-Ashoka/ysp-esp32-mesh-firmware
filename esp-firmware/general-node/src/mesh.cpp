@@ -1,15 +1,28 @@
 #include "mesh.hpp"
 
+/**
+ * @brief 
+ * 
+ */
 void Mesh::init()
 {
     mesh.init(config.ssid, config.password, config.scheduler, config.port);
 }
 
+/**
+ * @brief 
+ * 
+ */
 void Mesh::loop()
 {
     mesh.update();
 }
 
+/**
+ * @brief 
+ * 
+ * @param params 
+ */
 void Mesh::sendMessage(MessageParams params)
 {
 
@@ -25,23 +38,72 @@ void Mesh::sendMessage(MessageParams params)
     }
 }
 
+/**
+ * @brief 
+ * 
+ * @param callback 
+ */
 void Mesh::onReceive(void (*callback)(uint32_t from, String &msg))
 {
     mesh.onReceive(callback);
 }
 
-vector<uint32_t> Mesh::getPathToNode(uint32_t endNode)
+/**
+ * @brief 
+ * 
+ * @param node 
+ * @param end_node 
+ * @return vector<uint32_t> 
+ */
+vector<uint32_t> pathFinder(painlessmesh::protocol::NodeTree &node,uint32_t end_node)
 {
+    if (node.nodeId == end_node)
+    {
+        return {node.nodeId};
+    }
 
-    return vector<uint32_t>();
+    if (node.subs.size())
+    {
+        for (painlessmesh::protocol::NodeTree &child : node.subs)
+        {
+            vector<uint32_t> path = pathFinder(child, end_node);
+            if (!path.empty())
+            {
+                path.push_back(node.nodeId);
+                return path;
+            }
+        }
+    }
+    return {};
 }
-
-Mesh::Mesh(NodeConfig *node_config)
+/**
+ * @brief 
+ * 
+ * @param end_node 
+ * @return vector<uint32_t> 
+ */
+vector<uint32_t> Mesh::getPathToNode(uint32_t end_node)
 {
-    this->config = node_config->mesh_config;
+    painlessmesh::protocol::NodeTree node = mesh.asNodeTree();
+    return pathFinder(node, end_node);
+
+}
+ 
+/**
+ * @brief Construct a new Mesh:: Mesh object
+ * 
+ * @param node_config 
+ */
+Mesh::Mesh(NodeConfig &node_config)
+{
+    this->config = node_config.mesh_config;
 
     mesh.setDebugMsgTypes(ERROR | DEBUG);
-    mesh.setContainsRoot(config.containsRoot);
+
+    if (config.containsRoot)
+    {
+       mesh.setContainsRoot(true);
+    }
 
     // Set Node to Root only if it's needed
     if (config.setRoot)
@@ -50,5 +112,5 @@ Mesh::Mesh(NodeConfig *node_config)
     }
 
     // Update the ID in NodeConfig
-    node_config->setNodeId(mesh.getNodeId());
+    node_config.setNodeId(mesh.getNodeId());
 }

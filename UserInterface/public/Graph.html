@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+        rel="stylesheet">
+    <style>
+        .node {
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+
+        .link {
+            stroke: #777;
+            stroke-width: 2px;
+        }
+
+        body {
+            margin: 0;
+            background-color: #2C3639;
+        }
+
+        .Header {
+            padding: 2vh;
+            font-size: 34px;
+            color: #A27B5C;
+            font-family: "Rubik", sans-serif;
+        }
+
+        #network {
+            width: 100vw;
+            height: 90vh;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 120px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesh Network</title>
+</head>
+
+<body>
+    <header class="Header">Mesh Networking UI</header>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script>
+        var width = window.innerWidth,
+            height = window.innerHeight * 0.79;
+        var links = [];
+        
+        function UpdateLinks(data) {
+            var nodeId = data.nodeId;
+            if (data.subs && Array.isArray(data.subs)) {
+                for (var i = 0; i < data.subs.length; i++) {
+                    links.push({ source: nodeId, target: data.subs[i].nodeId });
+                    UpdateLinks(data.subs[i]);
+                }
+            }
+        }
+
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                UpdateLinks(data);
+
+                var nodes = {};
+                links.forEach(function (link) {
+                    link.source = nodes[link.source] || (nodes[link.source] = { id: link.source });
+                    link.target = nodes[link.target] || (nodes[link.target] = { id: link.target });
+                });
+
+                var svg = d3.select('body').append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+
+                var colorScale = d3.scale.category10();
+                var nodeRadius = width * 0.015;
+
+                var force = d3.layout.force()
+                    .size([width, height])
+                    .nodes(d3.values(nodes))
+                    .links(links)
+                    .on("tick", tick)
+                    .linkDistance(250)
+                    .charge(-1000)
+                    .start();
+
+                var link = svg.selectAll('.link')
+                    .data(links)
+                    .enter().append('line')
+                    .attr('class', 'link');
+
+                var node = svg.selectAll('.node')
+                    .data(force.nodes())
+                    .enter().append('circle')
+                    .attr('class', 'node')
+                    .attr('r', nodeRadius)
+                    .attr('fill', function (d, i) {
+                        var colors = ["#FF69B4", "#33CC33", "#66CCCC", "#FFCC00", "#CC0099", "#0099CC", "#FF9900", "#6600CC"];
+                        return colors[i % colors.length];
+                    })
+                    .on("mouseover", function (d) {
+                        tooltip.transition()
+                            .duration(200)
+                            .style("opacity", .9);
+                        tooltip.html("Node ID: " + d.id)
+                            .style("left", (d3.event.pageX + 5) + "px")
+                            .style("top", (d3.event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function (d) {
+                        tooltip.transition()
+                            .duration(500)
+                            .style("opacity", 0);
+                    });
+
+                var tooltip = d3.select("body").append("div")
+                    .attr("class", "tooltip")
+                    .style("opacity", 0);
+
+                function tick(e) {
+                    node.attr('cx', function (d) { return d.x = Math.max(nodeRadius, Math.min(width - nodeRadius, d.x)); })
+                        .attr('cy', function (d) { return d.y = Math.max(nodeRadius, Math.min(height - nodeRadius, d.y)); })
+                        .call(force.drag);
+                    link.attr('x1', function (d) { return d.source.x; })
+                        .attr('y1', function (d) { return d.source.y; })
+                        .attr('x2', function (d) { return d.target.x; })
+                        .attr('y2', function (d) { return d.target.y; });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading JSON:', error);
+            });
+    </script>
+    <script src="https://kit.fontawesome.com/4205bea182.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

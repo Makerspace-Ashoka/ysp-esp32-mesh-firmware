@@ -13,11 +13,12 @@
  */
 #include <HardwareSerial.h>
 #include <ArduinoJson.h>
+#include "config.hpp"
 
 class SerialInterface
 {
 private:
-    HardwareSerial Serial;
+    HardwareSerial *Serial;
     // String getReceivedMessages(int count=1);
     //  void sendMessage(String serial_payload);
     //  String getOwnNodeId();
@@ -43,5 +44,5 @@ public:
      *
      * @param serial Reference to already instantiated HardwareSerial object
      */
-    SerialInterface(HardwareSerial &serial);
+    SerialInterface(NodeConfig &config);
 };

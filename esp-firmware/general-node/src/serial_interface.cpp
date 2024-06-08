@@ -41,6 +41,11 @@ void SerialInterface::sendMessage(vector<String> &serial_payload_split)
     this->mesh->sendMessage(0, stringified_json_payload, true);
 }
 
+void SerialInterface::sendTopology()
+{
+    
+}
+
 void SerialInterface::displayLiveMessage(JsonDocument payload)
 {
     serializeJson(payload,this->serial);
@@ -50,8 +55,17 @@ void SerialInterface::processSerial()
 {
     if (this->serial->available())
     {
-        String command = this->serial->readStringUntil('\n').trim();
+        String command = this->serial->readStringUntil('\n');
+        command.trim();
         vector<String> serial_payload_split = splitString(command);
+        if (serial_payload_split[0] == "ping")
+        {
+            sendMessage(serial_payload_split);
+        }
+        else if (serial_payload_split[0] == "capture-topology")
+        {
+
+        }
         
 
         // process the commands

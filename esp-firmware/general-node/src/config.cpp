@@ -22,7 +22,6 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port = 5
 
     // Make sure we got both sssid and password on index 0 and 1 respectively
     assert(creds.size() == 2);
-
     this->mesh_config.ssid = creds[0];
     this->mesh_config.password = creds[1];
     this->mesh_config.containsRoot = true;
@@ -39,6 +38,11 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port = 5
 
     // Non - volatile config store
     this->nv_store_on_set = nv_store_on_set;
+
+    this->prefs = new Preferences();
+
+    // Make sure we're able to open the partition in read-write mode
+    assert(this->prefs->begin("default",false));
 }
 
 void NodeConfig::setNodeId(uint32_t node_id)
@@ -54,4 +58,13 @@ uint32_t NodeConfig::getNodeId()
 vector<String> NodeConfig::getWirelessCredentialsFromRoomId(String base_ssid, String base_password, uint8_t room_id)
 {
     return {base_ssid + "-" + room_id, base_password + "-" + room_id};
+}
+
+
+bool NodeConfig::save()
+{
+    this->prefs->putUInt("node-id",this->node_id);
+    this->prefs->putInt("room-id",this->room_config.id);
+    this->prefs->putString("ssid",this->mesh_config.ssid);
+    this->prefs->putString("password",this->mesh_config.password);
 }

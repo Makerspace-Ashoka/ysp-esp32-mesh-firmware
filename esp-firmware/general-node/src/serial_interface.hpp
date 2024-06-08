@@ -22,10 +22,11 @@ class SerialInterface
 private:
     HWCDC *serial;
     Mesh *mesh;
-    uint_32 nodeId;
+    uint32_t nodeId;
     // String getReceivedMessages(int count=1);
     void sendMessage(vector<String> &serial_payload);
     vector<String> splitString(const String &str);
+    void sendTopology();
     //  String getOwnNodeId();
 public:
     /**

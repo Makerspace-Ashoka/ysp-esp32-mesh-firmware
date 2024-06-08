@@ -27,6 +27,10 @@
 #include <Arduino.h>
 #include <string.h>
 #include <painlessMesh.h>
+#include <vector>
+
+using namespace std;
+
 /*
  * Config related to painless mesh
  */
@@ -99,6 +103,10 @@ public:
 
 class NodeConfig
 {
+private:
+    bool nv_store_on_set;
+    vector<String> getWirelessCredentialsFromRoomId(String base_ssid, String base_password, uint8_t room_id);
+
 public:
     uint32_t node_id;
     /*
@@ -127,8 +135,19 @@ public:
      */
     SerialConfig serial_config;
 
+    /**
+     * @brief Set the Node Id object
+     *
+     * @param node_id
+     */
     void setNodeId(uint32_t node_id);
+    /**
+     * @brief Get the Node Id object
+     *
+     * @return uint32_t node_id
+     */
     uint32_t getNodeId();
+
     // Constructor
-    NodeConfig(String ssid, String password, uint16_t port = 555, bool isRoot = false, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HWCDC &serial, String version);
+    NodeConfig(String base_ssid, String base_password, uint16_t port = 555, bool isRoot = false, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HWCDC &serial, String version, bool nv_store_on_set = false);
 };

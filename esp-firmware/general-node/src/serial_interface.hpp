@@ -22,8 +22,9 @@ class SerialInterface
 private:
     HWCDC *serial;
     Mesh *mesh;
+    uint_32 nodeId;
     // String getReceivedMessages(int count=1);
-    void sendMessage(String dest_node_id, String serial_payload);
+    void sendMessage(vector<String> &serial_payload);
     //  String getOwnNodeId();
 public:
     /**

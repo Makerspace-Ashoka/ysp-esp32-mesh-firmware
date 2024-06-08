@@ -26,7 +26,7 @@ private:
     // String getReceivedMessages(int count=1);
     void sendMessage(vector<String> &serial_payload);
     vector<String> splitString(const String &str);
-    void sendTopology();
+    void sendTopology(bool pretty);
     //  String getOwnNodeId();
 public:
     /**

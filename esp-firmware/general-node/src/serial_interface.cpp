@@ -41,9 +41,10 @@ void SerialInterface::sendMessage(vector<String> &serial_payload_split)
     this->mesh->sendMessage(0, stringified_json_payload, true);
 }
 
-void SerialInterface::sendTopology()
+void SerialInterface::sendTopology(bool pretty = false)
 {
-    
+    String topology = this->mesh->getTopology(pretty);
+    this->serial->println(topology);
 }
 
 void SerialInterface::displayLiveMessage(JsonDocument payload)
@@ -64,10 +65,12 @@ void SerialInterface::processSerial()
         }
         else if (serial_payload_split[0] == "capture-topology")
         {
-
+            sendTopology(false);
         }
-        
-
+        else if (serial_payload_split[0] == "topology")
+        {
+            sendTopology(true);
+        }
         // process the commands
     }
 }

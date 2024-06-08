@@ -42,9 +42,9 @@ public:
      * 
      * Get the topology for the current mesh network. 
      * 
-     * @return JsonDocument topology of the mesh network. 
+     * @return String topology of the mesh network. 
      */
-    JsonDocument getTopology();
+    String getTopology(bool pretty);
 
     /**
      * @brief This function returns the path to a specific node in the mesh network

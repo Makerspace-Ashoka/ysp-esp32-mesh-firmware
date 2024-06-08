@@ -30,6 +30,11 @@ void Mesh::sendMessage(uint32_t to = 0, String msg, bool is_broadcast=false)
     }
 }
 
+String Mesh::getTopology(bool pretty = false)
+{
+    return mesh.subConnectionJson(pretty);
+}
+
 /**
  * @brief
  *

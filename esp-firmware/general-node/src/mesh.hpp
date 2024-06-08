@@ -7,27 +7,7 @@
 
 using namespace std;
 
-/*
- * This class is used to pass the message
- */
-class MessageParams
-{
-public:
-    /*
-     * The destination node
-     */
-    uint32_t to;
 
-    /*
-     * The message to be sent
-     */
-    String msg;
-
-    /*
-     * Whether the message is a broadcast
-     */
-    bool isBroadcast;
-};
 
 class Mesh
 {
@@ -50,9 +30,12 @@ public:
 
     /**
      * @brief This function sends a message to a specific node or to all nodes in the mesh network
-     * @param params: MessageParams class containing the message to be sent, the destination node and whether the message is a broadcast
+     * 
+     * @param to destination node_id
+     * @param msg payload
+     * @param is_broadcast broadcast or single send using painlessMesh built in methods 
      */
-    void sendMessage(MessageParams params);
+    void sendMessage(uint32_t to, String msg, bool is_broadcast);
 
     /**
      * @brief Get the Topology object

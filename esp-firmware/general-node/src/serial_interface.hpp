@@ -13,14 +13,17 @@
  */
 #include <HardwareSerial.h>
 #include <ArduinoJson.h>
+#include <painlessMesh.h>
 #include "config.hpp"
+#include "mesh.hpp"
 
 class SerialInterface
 {
 private:
-    HardwareSerial *Serial;
+    HWCDC *serial;
+    Mesh *mesh;
     // String getReceivedMessages(int count=1);
-    //  void sendMessage(String serial_payload);
+    void sendMessage(String dest_node_id, String serial_payload);
     //  String getOwnNodeId();
 public:
     /**
@@ -44,5 +47,5 @@ public:
      *
      * @param serial Reference to already instantiated HardwareSerial object
      */
-    SerialInterface(NodeConfig &config);
+    SerialInterface(NodeConfig &config, Mesh &mesh);
 };

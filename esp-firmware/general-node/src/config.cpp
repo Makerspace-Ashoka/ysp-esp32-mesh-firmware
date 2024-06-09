@@ -24,10 +24,12 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port, bo
     this->base_ssid = base_ssid;
     this->base_password = base_password;
 
+    // this->mesh_config.ssid = base_ssid;
+    // this->mesh_config.password = base_password;
+
     // Room Config
     this->room_config.id = room_id;
     // Mesh Config
-    this->setWirelessCredentials();
     this->mesh_config.containsRoot = true;
     this->mesh_config.setRoot = isRoot;
     this->mesh_config.scheduler = &scheduler;
@@ -38,6 +40,7 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port, bo
     this->light_config.led_count = led_count;
     this->light_config.led_pin = led_pin;
 
+    this->setWirelessCredentials();
 
     // Non - volatile config store
     this->nv_store_on_set = nv_store_on_set;
@@ -45,13 +48,13 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port, bo
     this->prefs = new Preferences();
 
     // Make sure we're able to open the partition in read-write mode
-    assert(this->prefs->begin("default",false));
+    // assert(this->prefs->begin("default",false));
 }
 
 void NodeConfig::setNodeId(uint32_t node_id)
 {
     this->node_id = node_id;
-    this->save();
+    // this->save();
 }
 
 uint32_t NodeConfig::getNodeId()
@@ -62,7 +65,7 @@ uint32_t NodeConfig::getNodeId()
 void NodeConfig::setRoomId(uint8_t room_id)
 {
     this->room_config.id = room_id;
-    this->save();
+    // this->save();
 }
 
 uint8_t NodeConfig::getRoomId()
@@ -76,7 +79,7 @@ void NodeConfig::setWirelessCredentials()
 
     this->mesh_config.ssid = generated_credentials[0];
     this->mesh_config.password = generated_credentials[1];
-    this->save();
+    // this->save();
 }
 
 vector<String> NodeConfig::getWirelessCredentialsFromRoomId()

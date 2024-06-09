@@ -12,8 +12,9 @@ using namespace std;
 class Mesh
 {
 private:
-    MeshConfig config;
+    MeshConfig *config;
     painlessMesh mesh;
+    NodeConfig *nodeConfig;
 
     vector<uint32_t> pathFinder (painlessmesh::protocol::NodeTree &node, uint32_t end_node);
 
@@ -58,6 +59,8 @@ public:
      * @param callback: The callback function to be called when a message is received
      */
     void onReceive(void (*callback)(uint32_t, String &));
+
+    uint32_t getOwnNodeId();
 
     /**
      * @brief Construct a new Mesh object

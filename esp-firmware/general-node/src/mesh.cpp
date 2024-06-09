@@ -6,7 +6,22 @@
  */
 void Mesh::init()
 {
-    mesh.init(config.ssid, config.password, config.scheduler, config.port);
+    this->mesh.init(this->config->ssid, this->config->password, this->config->scheduler, this->config->port);
+        this->mesh.setDebugMsgTypes(ERROR | DEBUG);
+
+        if (this->config->containsRoot)
+        {
+            this->mesh.setContainsRoot(true);
+        }
+
+        // Set Node to Root only if it's needed
+        if (this->config->setRoot)
+        {
+            this->mesh.setRoot(true);
+        }
+
+        // Update the ID in NodeConfig
+        this->nodeConfig->setNodeId(this->mesh.getNodeId());
 }
 
 /**
@@ -15,24 +30,24 @@ void Mesh::init()
  */
 void Mesh::loop()
 {
-    mesh.update();
+    this->mesh.update();
 }
 
 void Mesh::sendMessage(uint32_t to, String msg, bool is_broadcast)
 {
     if (is_broadcast)
     {
-        mesh.sendBroadcast(msg);
+        this->mesh.sendBroadcast(msg);
     }
     else
     {
-        mesh.sendSingle(to, msg);
+        this->mesh.sendSingle(to, msg);
     }
 }
 
 String Mesh::getTopology(bool pretty = false)
 {
-    return mesh.subConnectionJson(pretty);
+    return this->mesh.subConnectionJson(pretty);
 }
 
 /**
@@ -42,7 +57,7 @@ String Mesh::getTopology(bool pretty = false)
  */
 void Mesh::onReceive(void (*callback)(uint32_t from, String &msg))
 {
-    mesh.onReceive(callback);
+    this->mesh.onReceive(callback);
 }
 
 /**
@@ -81,8 +96,13 @@ vector<uint32_t> Mesh::pathFinder(painlessmesh::protocol::NodeTree &node, uint32
  */
 vector<uint32_t> Mesh::getPathToNode(uint32_t end_node)
 {
-    painlessmesh::protocol::NodeTree node = mesh.asNodeTree();
+    painlessmesh::protocol::NodeTree node = this->mesh.asNodeTree();
     return pathFinder(node, end_node);
+}
+
+uint32_t Mesh::getOwnNodeId()
+{
+    return this->mesh.getNodeId();
 }
 
 /**
@@ -92,21 +112,8 @@ vector<uint32_t> Mesh::getPathToNode(uint32_t end_node)
  */
 Mesh::Mesh(NodeConfig &node_config)
 {
-    this->config = node_config.mesh_config;
+    this->config = &node_config.mesh_config;
+    this->nodeConfig = &node_config;
 
-    mesh.setDebugMsgTypes(ERROR | DEBUG);
-
-    if (config.containsRoot)
-    {
-        mesh.setContainsRoot(true);
-    }
-
-    // Set Node to Root only if it's needed
-    if (config.setRoot)
-    {
-        mesh.setRoot(true);
-    }
-
-    // Update the ID in NodeConfig
-    node_config.setNodeId(mesh.getNodeId());
+    // this->init();
 }

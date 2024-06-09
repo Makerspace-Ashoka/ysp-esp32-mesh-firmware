@@ -65,6 +65,7 @@ uint32_t NodeConfig::getNodeId()
 void NodeConfig::setRoomId(uint8_t room_id)
 {
     this->room_config.id = room_id;
+    this->setWirelessCredentials();
     // this->save();
 }
 

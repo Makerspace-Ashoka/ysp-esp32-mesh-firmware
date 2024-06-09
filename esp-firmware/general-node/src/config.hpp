@@ -36,6 +36,11 @@ using namespace std;
  * Config related to painless mesh
  */
 
+#if defined(ARDUINO_XIAO_ESP32C3)
+#define HardwareSerial HWCDC
+#endif
+
+
 class MeshConfig
 {
 public:
@@ -86,10 +91,10 @@ public:
     uint8_t led_count;
 };
 
-class SerialConfig
+class UART_Config
 {
 public:
-    HWCDC *serial;
+    HardwareSerial *serial;
 };
 
 /*
@@ -109,7 +114,6 @@ private:
 
     vector<String> getWirelessCredentialsFromRoomId();
     Preferences *prefs;
-
 
     String base_ssid;
     String base_password;
@@ -142,10 +146,9 @@ public:
      * Serial Config
      * All user config variables pertaining to serial communication bit ( Baud Rate, etc)
      */
-    SerialConfig serial_config;
+    UART_Config serial_config;
 
-
-        /**
+    /**
      * @brief Set the Node Id object
      *
      * @param node_id
@@ -186,5 +189,5 @@ public:
     bool load(string name = "defualt");
 
     // Constructor
-    NodeConfig(String base_ssid, String base_password, uint16_t port = 555, bool isRoot = false, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HWCDC &serial, String version, bool nv_store_on_set = false);
+    NodeConfig(String base_ssid, String base_password, uint16_t port, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
 };

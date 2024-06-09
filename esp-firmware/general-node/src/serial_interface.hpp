@@ -14,18 +14,17 @@
 #include <HardwareSerial.h>
 #include <ArduinoJson.h>
 #include <painlessMesh.h>
-#include "config.hpp"
 #include "mesh.hpp"
 
 class SerialInterface
 {
 private:
-    HWCDC *serial;
+    HardwareSerial *serial;
     Mesh *mesh;
     uint32_t nodeId;
     NodeConfig *nodeConfig;
     // String getReceivedMessages(int count=1);
-    
+
     vector<String> splitString(const String &str);
 
     void sendResponse(JsonDocument &response_serial_json, JsonDocument &incoming_serial_json);
@@ -39,6 +38,7 @@ private:
     void getRoomId(JsonDocument &incoming_serial_json);
     void getWirelessCredentials(JsonDocument &incoming_serial_json);
     void getBaseNetworkCredentials(JsonDocument &incoming_serial_json);
+
 public:
     /**
       * @brief logs the received payload on the serial interface

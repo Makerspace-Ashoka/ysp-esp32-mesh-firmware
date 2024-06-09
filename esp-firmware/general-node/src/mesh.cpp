@@ -18,7 +18,7 @@ void Mesh::loop()
     mesh.update();
 }
 
-void Mesh::sendMessage(uint32_t to = 0, String msg, bool is_broadcast=false)
+void Mesh::sendMessage(uint32_t to, String msg, bool is_broadcast)
 {
     if (is_broadcast)
     {

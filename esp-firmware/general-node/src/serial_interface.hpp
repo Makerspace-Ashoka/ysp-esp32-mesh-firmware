@@ -23,11 +23,22 @@ private:
     HWCDC *serial;
     Mesh *mesh;
     uint32_t nodeId;
+    NodeConfig *nodeConfig;
     // String getReceivedMessages(int count=1);
-    void sendMessage(vector<String> &serial_payload);
+    
     vector<String> splitString(const String &str);
-    void sendTopology(bool pretty);
+
+    void sendResponse(JsonDocument &response_serial_json, JsonDocument &incoming_serial_json);
+    void sendMessage(JsonDocument &incoming_serial_json);
+    void setRoomId(JsonDocument &incoming_serial_json);
+    void setBaseNetworkCredentials(JsonDocument &incoming_serial_json);
+    void sendTopology(bool pretty, JsonDocument &incoming_serial_json);
     //  String getOwnNodeId();
+
+    void getOwnNodeId(JsonDocument &incoming_serial_json);
+    void getRoomId(JsonDocument &incoming_serial_json);
+    void getWirelessCredentials(JsonDocument &incoming_serial_json);
+    void getBaseNetworkCredentials(JsonDocument &incoming_serial_json);
 public:
     /**
       * @brief logs the received payload on the serial interface

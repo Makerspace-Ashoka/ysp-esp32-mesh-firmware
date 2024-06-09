@@ -17,24 +17,24 @@
  */
 NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port = 555, bool isRoot = false, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HWCDC &serial, String version, bool nv_store_on_set = false)
 {
-    // Mesh Config
-    vector<String> creds = this->getWirelessCredentialsFromRoomId(base_ssid, base_password, room_id);
 
-    // Make sure we got both sssid and password on index 0 and 1 respectively
-    assert(creds.size() == 2);
-    this->mesh_config.ssid = creds[0];
-    this->mesh_config.password = creds[1];
+    this->base_ssid = base_ssid;
+    this->base_password = base_password;
+
+    // Room Config
+    this->room_config.id = room_id;
+    // Mesh Config
+    this->setWirelessCredentials();
     this->mesh_config.containsRoot = true;
     this->mesh_config.setRoot = isRoot;
     this->mesh_config.scheduler = &scheduler;
     // Serial Config
     this->serial_config.serial = &serial;
-    // Room Config
-    this->room_config.id = room_id;
     // Light Config
     this->light_config.effect_speed = 150;
     this->light_config.led_count = led_count;
     this->light_config.led_pin = led_pin;
+
 
     // Non - volatile config store
     this->nv_store_on_set = nv_store_on_set;
@@ -48,6 +48,7 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port = 5
 void NodeConfig::setNodeId(uint32_t node_id)
 {
     this->node_id = node_id;
+    this->save();
 }
 
 uint32_t NodeConfig::getNodeId()
@@ -55,11 +56,48 @@ uint32_t NodeConfig::getNodeId()
     return this->node_id;
 }
 
-vector<String> NodeConfig::getWirelessCredentialsFromRoomId(String base_ssid, String base_password, uint8_t room_id)
+void NodeConfig::setRoomId(uint8_t room_id)
 {
-    return {base_ssid + "-" + room_id, base_password + "-" + room_id};
+    this->room_config.id = room_id;
+    this->save();
 }
 
+uint8_t NodeConfig::getRoomId()
+{
+    return this->room_config.id;
+}
+
+void NodeConfig::setWirelessCredentials()
+{
+    vector<String> generated_credentials = this->getWirelessCredentialsFromRoomId();
+
+    this->mesh_config.ssid = generated_credentials[0];
+    this->mesh_config.password = generated_credentials[1];
+    this->save();
+}
+
+vector<String> NodeConfig::getWirelessCredentialsFromRoomId()
+{
+    return {this->base_ssid + "-" + this->room_config.id, this->base_password + this->room_config.id};
+}
+
+
+void NodeConfig::setBaseNetworkCredentials(String base_ssid, String base_password)
+{
+    this->base_ssid = base_ssid;
+    this->base_password = base_password;
+    this->setWirelessCredentials();
+}
+
+vector<String> NodeConfig::getBaseNetworkCredentials()
+{
+    return {this->base_ssid, this->base_password};
+}
+
+vector<String> NodeConfig::getWirelessCredentials()
+{
+    return {this->mesh_config.ssid, this->mesh_config.password};
+}
 
 bool NodeConfig::save()
 {

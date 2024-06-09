@@ -107,8 +107,14 @@ class NodeConfig
 private:
     bool nv_store_on_set;
 
-    vector<String> getWirelessCredentialsFromRoomId(String base_ssid, String base_password, uint8_t room_id);
+    vector<String> getWirelessCredentialsFromRoomId();
     Preferences *prefs;
+
+
+    String base_ssid;
+    String base_password;
+
+    void setWirelessCredentials();
 
 public:
     uint32_t node_id;
@@ -138,7 +144,8 @@ public:
      */
     SerialConfig serial_config;
 
-    /**
+
+        /**
      * @brief Set the Node Id object
      *
      * @param node_id
@@ -150,6 +157,16 @@ public:
      * @return uint32_t node_id
      */
     uint32_t getNodeId();
+
+    void setRoomId(uint8_t room_id);
+
+    uint8_t getRoomId();
+
+    void setBaseNetworkCredentials(String base_ssid, String base_password);
+
+    vector<String> getBaseNetworkCredentials();
+
+    vector<String> getWirelessCredentials();
 
     /**
      * @brief Saves the current state of config in the EEPROM

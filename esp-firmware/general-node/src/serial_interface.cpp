@@ -45,8 +45,10 @@ vector<String> SerialInterface::splitString(const String &str)
 void SerialInterface::sendResponse(JsonDocument &response_serial_json, JsonDocument &incoming_serial_json)
 {
     incoming_serial_json["payload"]["response"] = response_serial_json;
+    String stringified_json_response;
 
-    serializeJson(incoming_serial_json, this->serial);
+    serializeJson(incoming_serial_json, *this->serial);
+    this->serial->println();
 }
 
 void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
@@ -66,9 +68,9 @@ void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
     this->sendResponse(serial_json_mesh, incoming_serial_json);
 }
 
-void SerialInterface::sendTopology(bool pretty = false, JsonDocument &incoming_serial_json)
+void SerialInterface::sendTopology(bool pretty, JsonDocument &incoming_serial_json)
 {
-    // TODO: Change Mesh::getTopology to return a JsonDocument or deserialize the current stringified json
+    
     String topology = this->mesh->getTopology(pretty);
 
     JsonDocument response_serial_json;
@@ -95,8 +97,8 @@ void SerialInterface::setRoomId(JsonDocument &incoming_serial_json_payload)
 void SerialInterface::setBaseNetworkCredentials(JsonDocument &incoming_serial_json_payload)
 {
     // set the base network credentials
-    String new_base_ssid = incoming_serial_json_payload["payload"]["base_ssid"];
-    String new_base_password = incoming_serial_json_payload["payload"]["base_password"];
+    String new_base_ssid = incoming_serial_json_payload["payload"]["base_ssid"].as<String>();
+    String new_base_password = incoming_serial_json_payload["payload"]["base_password"].as<String>();
     this->nodeConfig->setBaseNetworkCredentials(new_base_ssid, new_base_password);
 
     JsonDocument response_serial_json;
@@ -142,7 +144,7 @@ void SerialInterface::getBaseNetworkCredentials(JsonDocument &incoming_serial_js
 
 void SerialInterface::displayLiveMessage(JsonDocument payload)
 {
-    serializeJson(payload,this->serial);
+    serializeJson(payload, *this->serial);
 }
 
 void SerialInterface::processSerial()

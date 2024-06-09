@@ -52,7 +52,7 @@ void Mesh::onReceive(void (*callback)(uint32_t from, String &msg))
  * @param end_node
  * @return vector<uint32_t>
  */
-vector<uint32_t> pathFinder(painlessmesh::protocol::NodeTree &node, uint32_t end_node)
+vector<uint32_t> Mesh::pathFinder(painlessmesh::protocol::NodeTree &node, uint32_t end_node)
 {
     if (node.nodeId == end_node)
     {

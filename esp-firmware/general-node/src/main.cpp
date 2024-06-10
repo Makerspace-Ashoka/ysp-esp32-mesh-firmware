@@ -14,8 +14,11 @@ Scheduler userScheduler;
 #define IS_ROOT_NODE false
 #define BAUD_RATE 115200
 
+
+void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
+
 // Class Instantiation
-NodeConfig *config = new NodeConfig(MESH_SSID, MESH_PASSWORD, MESH_PORT, false, userScheduler, ROOM_ID, LED_PIN, NUM_LED, Serial, VERSION, false);
+NodeConfig *config = new NodeConfig(MESH_SSID, MESH_PASSWORD, MESH_PORT, IS_ROOT_NODE, userScheduler, ROOM_ID, LED_PIN, NUM_LED, Serial, VERSION, false);
 
 Mesh *mesh = new Mesh(*config);
 
@@ -26,10 +29,18 @@ void setup()
 {
     Serial.begin(BAUD_RATE);
     mesh->init();
+    mesh->onReceive(onReceiveCallback);
 }
 
 void loop()
 {
-    serial_interface->processSerial();
     mesh->loop();
+    serial_interface->processSerial();
+}
+
+void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json)
+{
+    JsonDocument received_serial_mesh_json;
+    deserializeJson(received_serial_mesh_json, received_stringified_mesh_json);
+    serial_interface->displayLiveMessage(received_serial_mesh_json);
 }

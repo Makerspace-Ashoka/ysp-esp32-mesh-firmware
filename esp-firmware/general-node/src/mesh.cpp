@@ -6,7 +6,6 @@
  */
 void Mesh::init()
 {
-    auto serial = this->nodeConfig->serial_config.serial;
 
     this->mesh.setDebugMsgTypes(ERROR | DEBUG);
 

@@ -11,6 +11,18 @@
 #define IS_ROOT_NODE false
 #define BAUD_RATE 115200
 
+/* 
+    TODO: 
+        * Save and Load Config
+        * Lighting
+        * Mesh class rename to MeshHelper
+        * Root
+            * auto topology
+            * node numbers
+            * 
+        
+*/
+
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
 
 // Class Instantiation

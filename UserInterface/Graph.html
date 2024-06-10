@@ -86,7 +86,7 @@
             }
         }
 
-        fetch('data.json')
+        fetch('../python-interface/src/topology.json')
             .then(response => response.json())
             .then(data => {
                 UpdateLinks(data);

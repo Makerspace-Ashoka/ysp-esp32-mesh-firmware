@@ -10,6 +10,37 @@ Watch this space for hints and instructions over the next 4 days...
 
 If this is your first time at the workshop or if you're setting up the project for the first time, please follow these steps:
 
+### Step 0: Install Python
+Copy and run the commands in your terminal according to your operating system
+
+- **On Windows**:
+```
+winget install -e --id Python.Python.3.11 --scope machine
+```
+
+- **On macOS:**
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+```
+brew install python
+```
+
+Add Python to MacOS Path:
+ ```
+echo 'export PATH="$PATH:/Library/Frameworks/Python.framework/Versions/X.Y/bin"' >> ~/.zshrc
+
+``` 
+
+Replace X.Y with the version of Python you want to add to the path.
+Save and close the file.
+ 
+   ```
+source ~/.zshrc
+```
+
+
 ### Step 1: Clone the Repository
 If you are familiar with Git, clone the repository. If not, download the zip file from the repository URL, and extract it on your machine.
 
@@ -17,6 +48,7 @@ If you are familiar with Git, clone the repository. If not, download the zip fil
 
 ### Step 2: Navigate to the Project
 Open a terminal window. Here's how you can navigate to the project directory:
+
 - **On macOS:**
   ```
   cd path/to/ysp-esp32-mesh-firmware/python-interface/src
@@ -45,6 +77,10 @@ You can open this folder in VS-Code or any other IDE of your choice. But make su
 
 After setting up, proceed to the section below to start working on your project tasks.
 
+- **On Linux (Debian):** (if you don't already have `pip`)
+```
+sudo apt install python3-pip
+```
 ## Returning to the Workshop (Day 2 and Beyond)
 
 If you're returning to continue the workshop, follow these steps to get set up:

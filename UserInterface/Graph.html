@@ -78,6 +78,7 @@
 
         function UpdateLinks(data) {
             var nodeId = data.nodeId;
+            links.push({ source: nodeId, target: nodeId });
             if (data.subs && Array.isArray(data.subs)) {
                 for (var i = 0; i < data.subs.length; i++) {
                     links.push({ source: nodeId, target: data.subs[i].nodeId });

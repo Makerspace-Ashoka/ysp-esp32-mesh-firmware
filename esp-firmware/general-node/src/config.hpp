@@ -119,6 +119,10 @@ private:
 
     void setWirelessCredentials();
 
+    String default_base_ssid;
+    String default_base_password;
+    uint8_t default_room_id;
+
 public:
     uint32_t node_id;
     /*
@@ -188,6 +192,14 @@ public:
     bool load();
 
     /**
+     * @brief Reset the config to default values
+     *
+     * @return true
+     * @return false
+     */
+    bool resetToDefault();
+
+    /**
      * @brief  Logs the current state of the config
      *
      */
@@ -195,11 +207,8 @@ public:
     /**
      * @brief Construct a new Node Config:: Node Config object
      *
-     * @param base_ssid Base wireless SSID
-     * @param base_password Base Wireless PSK Key
      * @param isRoot Weather this node is a root node (There can only be one)
      * @param scheduler Scheduler Instance
-     * @param room_id Room Id of this Node
      * @param led_pin
      * @param led_count
      * @param serial
@@ -207,5 +216,5 @@ public:
      * @param nv_store_on_set
      */
     // Constructor
-    NodeConfig(String base_ssid, String base_password, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
+    NodeConfig(bool isRoot, Scheduler &scheduler, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
 };

@@ -2,25 +2,22 @@
 #include "serial_interface.hpp"
 // #include "mesh.hpp"
 
-#define BASE_SSID "whatyoulike"
-#define BASE_PASSWORD "somethingsneaky"
 #define NUM_LED 5
 #define LED_PIN 10
 #define VERSION "2.0.0"
-#define ROOM_ID 0
 #define IS_ROOT_NODE false
 #define BAUD_RATE 115200
 
-/* 
-    TODO: 
+/*
+    TODO:
         * Save and Load Config
         * Lighting
         * Mesh class rename to MeshHelper
         * Root
             * auto topology
             * node numbers
-            * 
-        
+            *
+
 */
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
@@ -28,7 +25,7 @@ void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_
 // Class Instantiation
 Scheduler user_scheduler;
 
-NodeConfig *config = new NodeConfig(BASE_SSID, BASE_PASSWORD, IS_ROOT_NODE, user_scheduler, ROOM_ID, LED_PIN, NUM_LED, Serial, VERSION, false);
+NodeConfig *config = new NodeConfig(IS_ROOT_NODE, user_scheduler, LED_PIN, NUM_LED, Serial, VERSION, false);
 
 Mesh *mesh = new Mesh(*config);
 
@@ -44,6 +41,9 @@ void setup()
 {
     Serial.begin(BAUD_RATE);
     delay(2000);
+
+    config->resetToDefault();
+
     Serial.println("Starting Node");
     mesh->init();
     mesh->onReceive(onReceiveCallback);

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <painlessMesh.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>

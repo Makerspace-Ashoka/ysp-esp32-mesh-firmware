@@ -6,7 +6,6 @@ SerialInterface::SerialInterface(NodeConfig &config, Mesh &mesh)
 {
     this->serial = config.serial_config.serial;
     this->mesh = &mesh;
-    this->nodeId = config.getNodeId();
     this->nodeConfig = &config;
 }
 
@@ -26,7 +25,7 @@ void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
     String stringified_json_mesh;
 
     serial_json_mesh["payload_type"] = "mesh";
-    serial_json_mesh["payload"]["from"] = this->nodeId;
+    serial_json_mesh["payload"]["from_node_id"] = this->nodeConfig->getNodeId();
     serial_json_mesh["payload"]["to_node_id"] = incoming_serial_json["payload"]["to_node_id"];
     serial_json_mesh["payload"]["HEX"] = incoming_serial_json["payload"]["HEX"];
     serial_json_mesh["payload"]["msg"] = incoming_serial_json["payload"]["msg"];

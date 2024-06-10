@@ -1,5 +1,8 @@
 #include "config.hpp"
 
+#define RW_MODE false
+#define RO_MODE true
+
 NodeConfig::NodeConfig(String base_ssid, String base_password, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set)
 {
     // TODO: Overwrite Default from NV Store
@@ -90,10 +93,93 @@ vector<String> NodeConfig::getWirelessCredentials()
 
 bool NodeConfig::save()
 {
-    this->prefs->putUInt("node-id", this->node_id);
-    this->prefs->putInt("room-id", this->room_config.id);
-    this->prefs->putString("ssid", this->mesh_config.ssid);
-    this->prefs->putString("password", this->mesh_config.password);
+
+    auto serial = this->serial_config.serial;
+
+    if (this->prefs->begin("default", RW_MODE))
+    {
+        if (!this->prefs->putUInt("node-id", this->node_id))
+        {
+            this->prefs->end();
+            serial->printf("node-id save failed\n");
+            return false;
+        }
+        if (!this->prefs->putInt("room-id", this->room_config.id))
+        {
+            this->prefs->end();
+            serial->printf("room-id save failed\n");
+            return false;
+        }
+        if (!this->prefs->putString("base-ssid", this->mesh_config.ssid.c_str()))
+        {
+            this->prefs->end();
+            serial->printf("ssid save failed\n");
+            return false;
+        }
+        if (!this->prefs->putString("base_password", this->mesh_config.password.c_str()))
+        {
+            this->prefs->end();
+            serial->printf("password save failed\n");
+            return false;
+        }
+        this->prefs->end();
+        serial->printf("Node Config Saved\n");
+        return true;
+    }
+
+    return false;
+}
+
+bool NodeConfig::load(string name = "defualt")
+{
+    auto serial = this->serial_config.serial;
+
+    uint8_t failed = 0;
+    if (this->prefs->begin("default", RO_MODE))
+    {
+        if (this->prefs->isKey("node-id"))
+        {
+            this->node_id = this->prefs->getUInt("node-id", 0);
+        }
+        else
+        {
+            failed++;
+        }
+        if (this->prefs->isKey("room-id"))
+        {
+            this->room_config.id = this->prefs->getInt("room-id", 0);
+        }
+        else
+        {
+            failed++;
+        }
+        if (this->prefs->isKey("base-ssid"))
+        {
+            this->mesh_config.ssid = this->prefs->getString("base_ssid", "");
+        }
+        else
+        {
+            failed++;
+        }
+        if (this->prefs->isKey("base-password"))
+        {
+            this->mesh_config.password = this->prefs->getString("base-password", "");
+        }
+        else
+        {
+            failed++;
+        }
+
+        this->prefs->end();
+
+        if (failed > 0)
+        {
+            serial->printf("Node Config Load Failed\n");
+            return false;
+        }
+        serial->printf("Node Config Loaded\n");
+        return true;
+    }
 }
 
 void NodeConfig::logConfig()

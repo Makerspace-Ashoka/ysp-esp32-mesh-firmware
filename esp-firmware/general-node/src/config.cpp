@@ -130,7 +130,7 @@ bool NodeConfig::save()
     return false;
 }
 
-bool NodeConfig::load(string name = "defualt")
+bool NodeConfig::load()
 {
     auto serial = this->serial_config.serial;
 
@@ -180,6 +180,7 @@ bool NodeConfig::load(string name = "defualt")
         serial->printf("Node Config Loaded\n");
         return true;
     }
+    return false;
 }
 
 void NodeConfig::logConfig()

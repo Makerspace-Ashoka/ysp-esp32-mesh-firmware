@@ -185,7 +185,7 @@ public:
      * @return true Load Successful
      * @return false Load Unsuccessful :(
      */
-    void load(string name = "defualt");
+    bool load();
 
     /**
      * @brief  Logs the current state of the config

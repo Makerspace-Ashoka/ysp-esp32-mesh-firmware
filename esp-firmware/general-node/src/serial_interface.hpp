@@ -23,9 +23,7 @@ private:
     Mesh *mesh;
     uint32_t nodeId;
     NodeConfig *nodeConfig;
-    // String getReceivedMessages(int count=1);
-
-    vector<String> splitString(const String &str);
+    void (*sendMessageCallable)(JsonDocument &serial_json_mesh);
 
     void sendResponse(JsonDocument &response_serial_json, JsonDocument &incoming_serial_json);
     void sendMessage(JsonDocument &incoming_serial_json);
@@ -40,6 +38,8 @@ private:
     void getBaseNetworkCredentials(JsonDocument &incoming_serial_json);
 
 public:
+
+    void setSendMessageCallable(void (*sendMessageCallback)(JsonDocument &stringified_json_mesh));
     /**
       * @brief logs the received payload on the serial interface
       *

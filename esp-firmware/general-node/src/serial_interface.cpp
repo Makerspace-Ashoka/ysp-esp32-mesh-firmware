@@ -9,6 +9,10 @@ SerialInterface::SerialInterface(NodeConfig &config, Mesh &mesh)
     this->nodeConfig = &config;
 }
 
+void SerialInterface::setSendMessageCallable(void (*sendMessageCallback)(JsonDocument &serial_json_mesh))
+{
+    this->sendMessageCallable = sendMessageCallback;
+}
 
 void SerialInterface::sendResponse(JsonDocument &response_serial_json, JsonDocument &incoming_serial_json)
 {
@@ -22,7 +26,7 @@ void SerialInterface::sendResponse(JsonDocument &response_serial_json, JsonDocum
 void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
 {
     JsonDocument serial_json_mesh;
-    String stringified_json_mesh;
+    // String stringified_json_mesh;
 
     serial_json_mesh["payload_type"] = "mesh";
     serial_json_mesh["payload"]["from_node_id"] = this->nodeConfig->getNodeId();
@@ -30,8 +34,10 @@ void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
     serial_json_mesh["payload"]["HEX"] = incoming_serial_json["payload"]["HEX"];
     serial_json_mesh["payload"]["msg"] = incoming_serial_json["payload"]["msg"];
 
-    serializeJson(serial_json_mesh, stringified_json_mesh);
-    this->mesh->sendMessage(0, stringified_json_mesh, true);
+
+    // serializeJson(serial_json_mesh, stringified_json_mesh);
+    // this->mesh->sendMessage(0, stringified_json_mesh, true);
+    this->sendMessageCallable(serial_json_mesh);
 
     this->sendResponse(serial_json_mesh, incoming_serial_json);
 }

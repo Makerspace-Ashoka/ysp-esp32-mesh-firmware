@@ -40,7 +40,6 @@ using namespace std;
 #define HardwareSerial HWCDC
 #endif
 
-
 class MeshConfig
 {
 public:
@@ -188,6 +187,25 @@ public:
      */
     bool load(string name = "defualt");
 
+    /**
+     * @brief  Logs the current state of the config
+     *
+     */
+    void logConfig();
+    /**
+     * @brief Construct a new Node Config:: Node Config object
+     *
+     * @param base_ssid Base wireless SSID
+     * @param base_password Base Wireless PSK Key
+     * @param isRoot Weather this node is a root node (There can only be one)
+     * @param scheduler Scheduler Instance
+     * @param room_id Room Id of this Node
+     * @param led_pin
+     * @param led_count
+     * @param serial
+     * @param version
+     * @param nv_store_on_set
+     */
     // Constructor
-    NodeConfig(String base_ssid, String base_password, uint16_t port, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
+    NodeConfig(String base_ssid, String base_password, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
 };

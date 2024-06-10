@@ -1,25 +1,8 @@
 #include "config.hpp"
 
-/**
- * @brief Construct a new Node Config:: Node Config object
- *
- * @param base_ssid Base wireless SSID
- * @param base_password Base Wireless PSK Key
- * @param port Wireless Mesh PORT
- * @param isRoot Weather this node is a root node (There can only be one)
- * @param scheduler Scheduler Instance
- * @param room_id Room Id of this Node
- * @param led_pin
- * @param led_count
- * @param serial
- * @param version
- * @param nv_store_on_set
- */
-NodeConfig::NodeConfig(String base_ssid, String base_password, uint16_t port, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set)
+NodeConfig::NodeConfig(String base_ssid, String base_password, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set)
 {
     // TODO: Overwrite Default from NV Store
-
-
 
     this->base_ssid = base_ssid;
     this->base_password = base_password;
@@ -88,7 +71,6 @@ vector<String> NodeConfig::getWirelessCredentialsFromRoomId()
     return {this->base_ssid + "-" + this->room_config.id, this->base_password + this->room_config.id};
 }
 
-
 void NodeConfig::setBaseNetworkCredentials(String base_ssid, String base_password)
 {
     this->base_ssid = base_ssid;
@@ -108,8 +90,25 @@ vector<String> NodeConfig::getWirelessCredentials()
 
 bool NodeConfig::save()
 {
-    this->prefs->putUInt("node-id",this->node_id);
-    this->prefs->putInt("room-id",this->room_config.id);
-    this->prefs->putString("ssid",this->mesh_config.ssid);
-    this->prefs->putString("password",this->mesh_config.password);
+    this->prefs->putUInt("node-id", this->node_id);
+    this->prefs->putInt("room-id", this->room_config.id);
+    this->prefs->putString("ssid", this->mesh_config.ssid);
+    this->prefs->putString("password", this->mesh_config.password);
+}
+
+void NodeConfig::logConfig()
+{
+    auto serial = this->serial_config.serial;
+
+    serial->printf("========= Node Config  =========\n\n");
+    serial->printf("Base SSID: %s\n", this->base_ssid.c_str());
+    serial->printf("Base Password: %s\n", this->base_password.c_str());
+    serial->printf("Node ID: %lu\n", this->node_id);
+    serial->printf("Room ID: %d\n", this->room_config.id);
+    serial->printf("Generated Mesh SSID: %s\n", this->mesh_config.ssid.c_str());
+    serial->printf("Generated Mesh Password: %s\n", this->mesh_config.password.c_str());
+    serial->printf("LED Count: %d\n", this->light_config.led_count);
+    serial->printf("LED Pin: %d\n", this->light_config.led_pin);
+    serial->printf("Version: %s\n", this->version.c_str());
+    serial->printf("\n========= Node Config  =========\n");
 }

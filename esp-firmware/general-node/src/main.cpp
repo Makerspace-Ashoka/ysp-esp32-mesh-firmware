@@ -2,11 +2,8 @@
 #include "serial_interface.hpp"
 // #include "mesh.hpp"
 
-Scheduler userScheduler;
-
-#define MESH_SSID "whatyoulike"
-#define MESH_PASSWORD "soemthingsneeky"
-#define MESH_PORT 5555
+#define BASE_SSID "whatyoulike"
+#define BASE_PASSWORD "somethingsneaky"
 #define NUM_LED 5
 #define LED_PIN 10
 #define VERSION "2.0.0"
@@ -14,28 +11,41 @@ Scheduler userScheduler;
 #define IS_ROOT_NODE false
 #define BAUD_RATE 115200
 
-
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
 
 // Class Instantiation
-NodeConfig *config = new NodeConfig(MESH_SSID, MESH_PASSWORD, MESH_PORT, IS_ROOT_NODE, userScheduler, ROOM_ID, LED_PIN, NUM_LED, Serial, VERSION, false);
+Scheduler user_scheduler;
+
+NodeConfig *config = new NodeConfig(BASE_SSID, BASE_PASSWORD, IS_ROOT_NODE, user_scheduler, ROOM_ID, LED_PIN, NUM_LED, Serial, VERSION, false);
 
 Mesh *mesh = new Mesh(*config);
 
 SerialInterface *serial_interface = new SerialInterface(*config, *mesh);
 
+Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
+                     { config->logConfig(); });
+
+Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
+                         { serial_interface->processSerial(); });
 
 void setup()
 {
     Serial.begin(BAUD_RATE);
+    delay(2000);
+    Serial.println("Starting Node");
     mesh->init();
     mesh->onReceive(onReceiveCallback);
+
+    user_scheduler.addTask(task_log_config);
+    task_log_config.enableDelayed(1000);
+
+    user_scheduler.addTask(task_process_serial);
+    task_process_serial.enable();
 }
 
 void loop()
 {
     mesh->loop();
-    serial_interface->processSerial();
 }
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json)

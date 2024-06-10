@@ -6,22 +6,24 @@
  */
 void Mesh::init()
 {
-    this->mesh.init(this->config->ssid, this->config->password, this->config->scheduler, this->config->port);
-        this->mesh.setDebugMsgTypes(ERROR | DEBUG);
+    auto serial = this->nodeConfig->serial_config.serial;
 
-        if (this->config->containsRoot)
-        {
-            this->mesh.setContainsRoot(true);
-        }
+    this->mesh.setDebugMsgTypes(ERROR | DEBUG);
 
-        // Set Node to Root only if it's needed
-        if (this->config->setRoot)
-        {
-            this->mesh.setRoot(true);
-        }
+    if (this->config->containsRoot)
+    {
+        this->mesh.setContainsRoot(true);
+    }
 
-        // Update the ID in NodeConfig
-        this->nodeConfig->setNodeId(this->mesh.getNodeId());
+    // Set Node to Root only if it's needed
+    if (this->config->setRoot)
+    {
+        this->mesh.setRoot(true);
+    }
+
+    this->mesh.init(this->config->ssid.c_str(), this->config->password.c_str(), this->config->scheduler);
+    // Update the ID in NodeConfig
+    this->nodeConfig->setNodeId(this->mesh.getNodeId());
 }
 
 /**
@@ -114,6 +116,4 @@ Mesh::Mesh(NodeConfig &node_config)
 {
     this->config = &node_config.mesh_config;
     this->nodeConfig = &node_config;
-
-    // this->init();
 }

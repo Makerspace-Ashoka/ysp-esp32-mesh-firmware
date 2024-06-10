@@ -5,13 +5,11 @@
 
 NodeConfig::NodeConfig(String base_ssid, String base_password, bool isRoot, Scheduler &scheduler, uint8_t room_id, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set)
 {
-    // TODO: Overwrite Default from NV Store
+    // Load with default values from the constructor
 
+    // Node Config
     this->base_ssid = base_ssid;
     this->base_password = base_password;
-
-    // this->mesh_config.ssid = base_ssid;
-    // this->mesh_config.password = base_password;
 
     // Room Config
     this->room_config.id = room_id;
@@ -26,12 +24,11 @@ NodeConfig::NodeConfig(String base_ssid, String base_password, bool isRoot, Sche
     this->light_config.led_count = led_count;
     this->light_config.led_pin = led_pin;
 
-    this->setWirelessCredentials();
+    this->prefs = new Preferences();
 
+    this->setWirelessCredentials();
     // Non - volatile config store
     this->nv_store_on_set = nv_store_on_set;
-
-    this->prefs = new Preferences();
 
     // Make sure we're able to open the partition in read-write mode
     // assert(this->prefs->begin("default",false));
@@ -110,13 +107,13 @@ bool NodeConfig::save()
             serial->printf("room-id save failed\n");
             return false;
         }
-        if (!this->prefs->putString("base-ssid", this->mesh_config.ssid.c_str()))
+        if (!this->prefs->putString("base-ssid", this->base_ssid.c_str()))
         {
             this->prefs->end();
             serial->printf("ssid save failed\n");
             return false;
         }
-        if (!this->prefs->putString("base_password", this->mesh_config.password.c_str()))
+        if (!this->prefs->putString("base_password", this->base_ssid.c_str()))
         {
             this->prefs->end();
             serial->printf("password save failed\n");
@@ -155,7 +152,7 @@ bool NodeConfig::load()
         }
         if (this->prefs->isKey("base-ssid"))
         {
-            this->mesh_config.ssid = this->prefs->getString("base_ssid", "");
+            this->base_ssid = this->prefs->getString("base_ssid", "");
         }
         else
         {
@@ -163,7 +160,7 @@ bool NodeConfig::load()
         }
         if (this->prefs->isKey("base-password"))
         {
-            this->mesh_config.password = this->prefs->getString("base-password", "");
+            this->base_password = this->prefs->getString("base-password", "");
         }
         else
         {

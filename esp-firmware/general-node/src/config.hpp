@@ -117,11 +117,19 @@ private:
     String base_ssid;
     String base_password;
 
+    /**
+     * @brief Loads the Saved Config Values from the EEPROM, If not found sets the default values
+     *
+     */
+    void loadSavedConfigOrSetDefault();
+
     void setWirelessCredentials();
 
-    String default_base_ssid;
-    String default_base_password;
-    uint8_t default_room_id;
+    String default_base_ssid = "whatyoulike";
+    String default_base_password = "somethingsneaky";
+    uint8_t default_room_id = 0;
+
+    String nv_store_namespace = "node_config";
 
 public:
     uint32_t node_id;
@@ -194,10 +202,8 @@ public:
     /**
      * @brief Reset the config to default values
      *
-     * @return true
-     * @return false
      */
-    bool resetToDefault();
+    void resetToDefault();
 
     /**
      * @brief  Logs the current state of the config
@@ -216,5 +222,5 @@ public:
      * @param nv_store_on_set
      */
     // Constructor
-    NodeConfig(bool isRoot, Scheduler &scheduler, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, bool nv_store_on_set);
+    NodeConfig(bool isRoot, Scheduler &scheduler, uint8_t led_pin, uint8_t led_count, HardwareSerial &serial, String version, Preferences &prefs, bool nv_store_on_set);
 };

@@ -7,6 +7,9 @@
 #define VERSION "2.0.0"
 #define IS_ROOT_NODE false
 #define BAUD_RATE 115200
+#define NV_STORE_ON_SET true
+//
+#define DELAYED_BOOT_START 5000
 
 /*
     TODO:
@@ -24,12 +27,10 @@ void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_
 
 // Class Instantiation
 Scheduler user_scheduler;
-
-NodeConfig *config = new NodeConfig(IS_ROOT_NODE, user_scheduler, LED_PIN, NUM_LED, Serial, VERSION, false);
-
-Mesh *mesh = new Mesh(*config);
-
-SerialInterface *serial_interface = new SerialInterface(*config, *mesh);
+Preferences prefs;
+NodeConfig *config;
+Mesh *mesh;
+SerialInterface *serial_interface;
 
 Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
                      { config->logConfig(); });
@@ -40,11 +41,29 @@ Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
 void setup()
 {
     Serial.begin(BAUD_RATE);
-    delay(2000);
 
-    config->resetToDefault();
+    ulong start_time = millis();
 
-    Serial.println("Starting Node");
+    while ((millis() - start_time) < DELAYED_BOOT_START)
+    {
+        Serial.printf(". ");
+        delay(1000);
+    }
+    Serial.print("Starting Node...\n");
+
+    if (!prefs.begin("node_config", false))
+    {
+        Serial.println("Failed to open Preferences");
+        prefs.clear();
+    }
+
+    config = new NodeConfig(IS_ROOT_NODE, user_scheduler, LED_PIN, NUM_LED, Serial, VERSION, prefs, NV_STORE_ON_SET);
+    mesh = new Mesh(*config);
+    serial_interface = new SerialInterface(*config, *mesh);
+
+    delay(100);
+
+    // Start the mesh
     mesh->init();
     mesh->onReceive(onReceiveCallback);
 

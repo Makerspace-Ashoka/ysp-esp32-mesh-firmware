@@ -16,8 +16,9 @@ Lighting::Lighting(NodeConfig &config, Mesh &mesh) : ledStrip(config.light_confi
     this->led_gpio_pin = config.light_config.led_pin;
     this->current_led_index = 0;
     this->ledStrip.Begin();
+    this->ledStrip.SetLuminance(175);
     this->ledStrip.Show();
-    this->hex_color = HtmlColor(0x00f000);
+    this->setLightColor("#FF69B4");
 }
 
 /**
@@ -32,8 +33,6 @@ void Lighting::setLightColor(String hex_color_id)
 
 void Lighting::lightAnimate()
 {
-    // this->serial->println("Animating LED strip.");
-    // this->serial->println("Current LED index: " + String(this->current_led_index));
     this->ledStrip.SetPixelColor(this->current_led_index, this->hex_color);
     this->ledStrip.Show();
     this->current_led_index++;
@@ -41,8 +40,7 @@ void Lighting::lightAnimate()
 
 void Lighting::lightReset()
 {
-    // this->serial->println("Resetting LED strip.");
-    this->ledStrip.ClearTo(0);
+    this->setLightColor("black");
     this->current_led_index = 0;
 }
 
@@ -54,8 +52,6 @@ void Lighting::setEndNodeId(String end_node_id)
 void Lighting::pathFinder()
 {
     this->path_to_end_node = this->mesh->getPathToNode(this->end_node_id);
-    // this->serial->println("Path to end node: ");
-    // this->serial->println(this->path_to_end_node.size());
 }
 
 void Lighting::sendPathLightingMessages()
@@ -73,8 +69,7 @@ void Lighting::sendPathLightingMessages()
     this->hex_color.ToString<HtmlShortColorNames>(hex_color_string, 8);
     serial_json_mesh["lighting"]["color"] = hex_color_string;
     serializeJson(serial_json_mesh, stringified_json_mesh);
-    
-    // this->serial->println(stringified_json_mesh);
+
     for (uint32_t node_id : this->path_to_end_node)
     {
         this->mesh->sendMessage(node_id, stringified_json_mesh, false);

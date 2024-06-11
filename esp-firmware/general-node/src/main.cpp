@@ -3,6 +3,7 @@
 #include "lighting.hpp"
 // #include "mesh.hpp"
 
+#define LED_ANIMATE_DELAY 300
 #define NUM_LED 5
 #define LED_PIN 10
 #define VERSION "2.0.0"
@@ -11,18 +12,6 @@
 #define NV_STORE_ON_SET true
 //
 #define DELAYED_BOOT_START 5000
-
-/*
-    TODO:
-        * Save and Load Config
-        * Lighting
-        * Mesh class rename to MeshHelper
-        * Root
-            * auto topology
-            * node numbers
-            *
-
-*/
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
 void processLightingOnMessageReceive(JsonDocument &received_serial_mesh_json);
@@ -39,28 +28,33 @@ Mesh *mesh;
 SerialInterface *serial_interface;
 Lighting *lighting;
 
-Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
-                     { config->logConfig(); });
-
-Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
-                         { serial_interface->processSerial(); });
-
-
-// Root Node Task 
-// Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
-//                            { Serial.printf("Node Count: %d\n", mesh->getNodesCount()); });
-
-// Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
-//                             { Serial.println(mesh->getTopology(true)); });
-
 /*
     -using TaskCallback and TaskOnDisable-
     Positional Arguments:
     Task(unsigned long aInterval, long aIterations, TaskCallback aCallback, Scheduler* aScheduler, bool aEnable, TaskOnEnable aOnEnable, TaskOnDisable aOnDisable, bool aSelfdestruct);
 */
-Task task_light_animate(TASK_IMMEDIATE, NUM_LED, []()
+Task task_light_animate_off(LED_ANIMATE_DELAY, NUM_LED, []()
+                            { lighting->lightAnimate(); }, NULL, false, NULL, []()
+                            { lighting->lightReset(); });
+
+Task task_light_animate(LED_ANIMATE_DELAY, NUM_LED, []()
                         { lighting->lightAnimate(); }, NULL, false, NULL, []()
-                        { lighting->lightReset(); });
+                        { lighting->lightReset();
+                          task_light_animate_off.restart(); });
+
+Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
+                     {  config->logConfig();
+                        task_light_animate.restart(); });
+
+Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
+                         { serial_interface->processSerial(); });
+
+// Root Node Task
+// Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
+//                            { Serial.printf("Node Count: %d\n", mesh->getNodesCount()); });
+
+// Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
+//                             { Serial.println(mesh->getTopology(true)); });
 
 Task task_path_lighting(TASK_IMMEDIATE, TASK_ONCE, &pathLighting);
 
@@ -102,6 +96,7 @@ void setup()
     task_process_serial.enable();
 
     user_scheduler.addTask(task_light_animate);
+    user_scheduler.addTask(task_light_animate_off);
     // task_light_animate.enable();
 
     user_scheduler.addTask(task_path_lighting);
@@ -128,10 +123,13 @@ void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_
 
 void processLightingOnMessageReceive(JsonDocument &received_serial_mesh_json)
 {
-    if (received_serial_mesh_json["lighting"]["color"] != NULL)
+    if (received_serial_mesh_json.containsKey("lighting"))
     {
-        lighting->setLightColor(received_serial_mesh_json["lighting"]["color"].as<String>());
-        task_light_animate.enable();
+        if (received_serial_mesh_json["lighting"].containsKey("color"))
+        {
+            lighting->setLightColor(received_serial_mesh_json["lighting"]["color"].as<String>());
+            task_light_animate.restart();
+        }
     }
 }
 
@@ -140,13 +138,13 @@ void sendMeshMessageCallback(JsonDocument &serial_json_mesh)
     String stringified_json_mesh;
     serializeJson(serial_json_mesh, stringified_json_mesh);
     mesh->sendMessage(0, stringified_json_mesh, true);
+    // send lightup messages
     if (serial_json_mesh["payload"]["HEX"] != "false")
     {
-        serial_json_mesh["lighting"]["color"] = serial_json_mesh["payload"]["HEX"];
         lighting->setEndNodeId(serial_json_mesh["payload"]["to_node_id"].as<String>());
         lighting->setLightColor(serial_json_mesh["payload"]["HEX"].as<String>());
-        task_light_animate.enable();
-        task_path_lighting.enable();
+        task_light_animate.restart();
+        task_path_lighting.restart();
     }
 }
 

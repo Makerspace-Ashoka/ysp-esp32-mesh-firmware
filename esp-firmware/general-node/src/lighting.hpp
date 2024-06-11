@@ -1,4 +1,4 @@
-#include <NeoPixelBus.h>
+#include <NeoPixelBusLg.h>
 #include "config.hpp"
 #include "mesh.hpp"
 
@@ -15,7 +15,7 @@ private:
     uint8_t led_gpio_pin;
     uint8_t current_led_index;
     // String hex_color_id;
-    NeoPixelBus<NeoGrbFeature, Neo800KbpsMethod> ledStrip;
+    NeoPixelBusLg<NeoGrbFeature, Neo800KbpsMethod> ledStrip;
     HtmlColor hex_color;
     Mesh *mesh;
     HardwareSerial *serial;

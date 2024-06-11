@@ -41,15 +41,6 @@ void NodeConfig::loadSavedConfigOrSetDefault()
     auto prefs = this->prefs;
     auto serial = this->serial_config.serial;
 
-    // if (!prefs->begin("node_config", RO_MODE))
-    // {
-    //     serial->printf("Failed to open Preferences\n");
-    //     prefs->clear();
-    //     prefs->end();
-    // }
-
-    // prefs->end();
-
     this->room_config.id = prefs->getInt("room_id", this->default_room_id);
     this->base_ssid = prefs->getString("base_ssid", this->default_base_ssid);
     this->base_password = prefs->getString("base_password", this->default_base_password);
@@ -77,7 +68,6 @@ void NodeConfig::setWirelessCredentials()
 
     this->mesh_config.ssid = generated_credentials[0];
     this->mesh_config.password = generated_credentials[1];
-    // this->save();
 }
 
 vector<String> NodeConfig::getWirelessCredentialsFromRoomId()
@@ -112,12 +102,6 @@ bool NodeConfig::save()
     auto serial = this->serial_config.serial;
     auto prefs = this->prefs;
 
-    // if (!prefs->begin("node_config", RW_MODE))
-    // {
-    //     serial->printf("Failed to open Preferences\n");
-    //     return false;
-    // }
-
     vector<String> failed_to_save;
     if (!prefs->putInt("room_id", this->room_config.id))
     {
@@ -131,8 +115,6 @@ bool NodeConfig::save()
     {
         failed_to_save.push_back("base_password");
     }
-
-    // prefs->end();
 
     if (failed_to_save.size() > 0)
     {
@@ -153,17 +135,17 @@ void NodeConfig::logConfig()
 {
     auto serial = this->serial_config.serial;
 
-    serial->printf("========= Node Config  =========\n\n");
-    serial->printf("# Loaded from Flash\n");
-    serial->printf("Base SSID: %s\n", this->base_ssid.c_str());
-    serial->printf("Base Password: %s\n", this->base_password.c_str());
-    serial->printf("Room ID: %d\n", this->room_config.id);
-    serial->printf("\n# Loaded from Program Space\n");
-    serial->printf("Node ID: %lu\n", this->node_id);
-    serial->printf("Generated Mesh SSID: %s\n", this->mesh_config.ssid.c_str());
-    serial->printf("Generated Mesh Password: %s\n", this->mesh_config.password.c_str());
-    serial->printf("LED Count: %d\n", this->light_config.led_count);
-    serial->printf("LED Pin: %d\n", this->light_config.led_pin);
-    serial->printf("Version: %s\n", this->version.c_str());
-    serial->printf("\n========= Node Config  =========\n");
+    serial->printf("========= Start Of Node Config  =========\n\n");
+    serial->printf("\t# Loaded from Flash\n");
+    serial->printf("\tBase SSID: %s\n", this->base_ssid.c_str());
+    serial->printf("\tBase Password: %s\n", this->base_password.c_str());
+    serial->printf("\tRoom ID: %d\n", this->room_config.id);
+    serial->printf("\n\t# Loaded from Program Space\n");
+    serial->printf("\tNode ID: %lu\n", this->node_id);
+    serial->printf("\tGenerated Mesh SSID: %s\n", this->mesh_config.ssid.c_str());
+    serial->printf("\tGenerated Mesh Password: %s\n", this->mesh_config.password.c_str());
+    serial->printf("\tLED Count: %d\n", this->light_config.led_count);
+    serial->printf("\tLED Pin: %d\n", this->light_config.led_pin);
+    serial->printf("\tVersion: %s\n", this->version.c_str());
+    serial->printf("\n========= End Of Node Config  =========\n");
 }

@@ -129,6 +129,10 @@ private:
     String default_base_password = "somethingsneaky";
     uint8_t default_room_id = 0;
 
+    /**
+     * @brief 
+     * 
+     */
     String nv_store_namespace = "node_config";
 
 public:

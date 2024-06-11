@@ -34,7 +34,6 @@ void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
     serial_json_mesh["payload"]["HEX"] = incoming_serial_json["payload"]["HEX"];
     serial_json_mesh["payload"]["msg"] = incoming_serial_json["payload"]["msg"];
 
-
     // serializeJson(serial_json_mesh, stringified_json_mesh);
     // this->mesh->sendMessage(0, stringified_json_mesh, true);
     this->sendMessageCallable(serial_json_mesh);
@@ -44,13 +43,13 @@ void SerialInterface::sendMessage(JsonDocument &incoming_serial_json)
 
 void SerialInterface::sendTopology(bool pretty, JsonDocument &incoming_serial_json)
 {
-    
+
     String topology = this->mesh->getTopology(pretty);
 
     JsonDocument response_serial_json;
     deserializeJson(response_serial_json, topology);
 
-    this->sendResponse(response_serial_json, incoming_serial_json);    
+    this->sendResponse(response_serial_json, incoming_serial_json);
 }
 
 void SerialInterface::setRoomId(JsonDocument &incoming_serial_json_payload)
@@ -129,7 +128,7 @@ void SerialInterface::processSerial()
         incoming_stringified_json.trim();
         JsonDocument incoming_serial_json;
         deserializeJson(incoming_serial_json, incoming_stringified_json);
-        
+
         if (incoming_serial_json["payload"]["cmd"] == "ping")
         {
             this->sendMessage(incoming_serial_json);
@@ -161,6 +160,10 @@ void SerialInterface::processSerial()
         else if (incoming_serial_json["payload"]["cmd"] == "get-base-network-credentials")
         {
             this->getBaseNetworkCredentials(incoming_serial_json);
+        }
+        else if (incoming_serial_json["payload"]["cmd"] == "esp-reset")
+        {
+            ESP.restart();
         }
         else
         {

@@ -12,7 +12,7 @@ hardware and software listed below.
 
 - [x] ESP32 with IDsa
 
-![](.assets/esp32_pic.jpg)
+![](./assets/esp32_pic.jpg)
 
 - [x] A working Laptop with Windows/Mac/Linux
 
@@ -59,7 +59,7 @@ code.
 
 1.  Go to [https://github.com/Makerspace-Ashoka/ysp-esp32-mesh-firmware](https://github.com/Makerspace-Ashoka/ysp-esp32-mesh-firmware) and download the .zip file.
 	
-	![](.assets/ysp_firmware.png)
+	![](./assets/ysp_firmware.png)
 
 2.  (**Important**) Extract the .zip file.
 
@@ -86,7 +86,7 @@ latest version. You can find specific instructions for your OS in the
 1.  Launch VS Code and use `Open Folder` to load the
     `ysp-esp32-mesh-firmware` directory.
 	
-	![](.assets/vs_code_folder.png)
+	![](./assets/vs_code_folder.png)
 
     You should be able to see your folder structure on the left panel.
 
@@ -96,7 +96,7 @@ When you open a python file (.py), VS Code will ask you to install the Python ex
 
 You should now be able to run your code using the Run button in VS Code (see image below for reference).
 
-![](.assets/vscode-run-code.png)
+![](./assets/vscode-run-code.png)
 
 To make sure you are running the python environment just created
 (`.venv`), you can see the bottom-right corner in VS Code, which says the environment name, along with python version.

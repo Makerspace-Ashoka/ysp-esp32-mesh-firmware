@@ -13,7 +13,7 @@ Watch this space for hints and instructions over the next 4 days...
 ### Step 0: Install Python and Everything Everywhere All At Once
 That you will need for the next 4 days.
 
-Go to [INSTALL.md](https://github.com/Makerspace-Ashoka/ysp-esp32-mesh-firmware/blob/main/README.md) to see installation instructions.
+Go to [INSTALL.md](https://github.com/Makerspace-Ashoka/ysp-esp32-mesh-firmware/blob/main/INSTALL.md) to see installation instructions.
 
 ### Step 1: Clone the Repository
 

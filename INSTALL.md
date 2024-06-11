@@ -10,7 +10,7 @@ date: 2024-06-10
 You will be working in pairs, so make sure each pair has all the
 hardware and software listed below.
 
-- [x] ESP32 with IDsa
+- [x] ESP32 with IDs
 
 ![](./assets/esp32_pic.jpg)
 

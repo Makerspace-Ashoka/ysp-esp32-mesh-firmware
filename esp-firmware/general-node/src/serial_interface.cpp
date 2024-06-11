@@ -118,6 +118,7 @@ void SerialInterface::getBaseNetworkCredentials(JsonDocument &incoming_serial_js
 void SerialInterface::displayLiveMessage(JsonDocument payload)
 {
     serializeJson(payload, *this->serial);
+    this->serial->println();
 }
 
 void SerialInterface::processSerial()

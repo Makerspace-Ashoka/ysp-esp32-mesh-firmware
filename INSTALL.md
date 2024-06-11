@@ -1,8 +1,3 @@
----
-title: YSP Tech, Data, and Computer Science
-date: 2024-06-10
----
-
 **Estimated Time**: $30$ minutes
 
 # Hardware and Software Requirements

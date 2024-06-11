@@ -45,6 +45,14 @@ Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
 Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
                          { serial_interface->processSerial(); });
 
+
+// Root Node Task 
+// Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
+//                            { Serial.printf("Node Count: %d\n", mesh->getNodesCount()); });
+
+// Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
+//                             { Serial.println(mesh->getTopology(true)); });
+
 /*
     -using TaskCallback and TaskOnDisable-
     Positional Arguments:
@@ -97,6 +105,12 @@ void setup()
     // task_light_animate.enable();
 
     user_scheduler.addTask(task_path_lighting);
+
+    // user_scheduler.addTask(auto_dump_esp_counter);
+    // auto_dump_esp_counter.enable();
+
+    // user_scheduler.addTask(auto_dump_esp_topology);
+    // auto_dump_esp_topology.enable();
 }
 
 void loop()

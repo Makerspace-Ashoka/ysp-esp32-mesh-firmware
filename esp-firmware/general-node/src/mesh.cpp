@@ -106,6 +106,9 @@ uint32_t Mesh::getOwnNodeId()
     return this->mesh.getNodeId();
 }
 
+int Mesh::getNodesCount(){
+    return this -> mesh.getNodeList().size();}
+
 /**
  * @brief Construct a new Mesh:: Mesh object
  *

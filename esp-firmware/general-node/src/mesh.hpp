@@ -9,8 +9,6 @@
 
 using namespace std;
 
-
-
 class Mesh
 {
 private:
@@ -18,7 +16,7 @@ private:
     painlessMesh mesh;
     NodeConfig *nodeConfig;
 
-    vector<uint32_t> pathFinder (painlessmesh::protocol::NodeTree &node, uint32_t end_node);
+    vector<uint32_t> pathFinder(painlessmesh::protocol::NodeTree &node, uint32_t end_node);
 
 public:
     /**
@@ -33,21 +31,23 @@ public:
 
     /**
      * @brief This function sends a message to a specific node or to all nodes in the mesh network
-     * 
+     *
      * @param to destination node_id
      * @param msg payload
-     * @param is_broadcast broadcast or single send using painlessMesh built in methods 
+     * @param is_broadcast broadcast or single send using painlessMesh built in methods
      */
     void sendMessage(uint32_t to, String msg, bool is_broadcast);
 
     /**
      * @brief Get the Topology object
-     * 
-     * Get the topology for the current mesh network. 
-     * 
-     * @return String topology of the mesh network. 
+     *
+     * Get the topology for the current mesh network.
+     *
+     * @return String topology of the mesh network.
      */
     String getTopology(bool pretty);
+
+    int getNodesCount();
 
     /**
      * @brief This function returns the path to a specific node in the mesh network
@@ -66,8 +66,8 @@ public:
 
     /**
      * @brief Construct a new Mesh object
-     * 
-     * @param node_config 
+     *
+     * @param node_config
      */
     Mesh(NodeConfig &node_config);
 };

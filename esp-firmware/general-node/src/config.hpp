@@ -130,8 +130,8 @@ private:
     uint8_t default_room_id = 0;
 
     /**
-     * @brief 
-     * 
+     * @brief
+     *
      */
     String nv_store_namespace = "node_config";
 

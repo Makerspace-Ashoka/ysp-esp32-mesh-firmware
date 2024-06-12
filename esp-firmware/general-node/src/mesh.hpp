@@ -9,6 +9,16 @@
 
 using namespace std;
 
+/**
+ * @brief Mesh Configuration
+ * The `Mesh` class is defining a configuration structure for a mesh network setup. It includes the following members:
+ *
+ * Private members:
+ * - `config` : A pointer to the mesh configuration
+ * - `mesh` : An instance of the painlessMesh class
+ * - `nodeConfig` : A pointer to the node configuration
+ *
+ */
 class Mesh
 {
 private:
@@ -16,6 +26,13 @@ private:
     painlessMesh mesh;
     NodeConfig *nodeConfig;
 
+    /**
+     * @brief Recursively find the path to a specific node in the mesh network
+     *
+     * @param node
+     * @param end_node
+     * @return vector<uint32_t>
+     */
     vector<uint32_t> pathFinder(painlessmesh::protocol::NodeTree &node, uint32_t end_node);
 
 public:
@@ -47,6 +64,13 @@ public:
      */
     String getTopology(bool pretty);
 
+    /**
+     * @brief Get the Nodes Count object
+     *
+     * Get the number of nodes in the mesh network.
+     *
+     * @return int number of nodes in the mesh network.
+     */
     int getNodesCount();
 
     /**
@@ -62,6 +86,10 @@ public:
      */
     void onReceive(void (*callback)(uint32_t, String &));
 
+    /**
+     * @brief Get the Own Node Id.
+     * @return uint32_t: The node id of the current node
+     */
     uint32_t getOwnNodeId();
 
     /**

@@ -12,6 +12,7 @@ NodeConfig::NodeConfig(bool isRoot, Scheduler &scheduler, uint8_t led_pin, uint8
     this->mesh_config.containsRoot = true;
     this->mesh_config.setRoot = isRoot;
     this->mesh_config.scheduler = &scheduler;
+
     // Serial Config
     this->serial_config.serial = &serial;
     // Light Config
@@ -22,6 +23,7 @@ NodeConfig::NodeConfig(bool isRoot, Scheduler &scheduler, uint8_t led_pin, uint8
     this->version = version;
 
     this->setWirelessCredentials();
+
     // Non - volatile config store
     this->nv_store_on_set = nv_store_on_set;
 }
@@ -141,6 +143,7 @@ void NodeConfig::logConfig()
     serial->printf("\tBase Password: %s\n", this->base_password.c_str());
     serial->printf("\tRoom ID: %d\n", this->room_config.id);
     serial->printf("\n\t# Loaded from Program Space\n");
+    serial->printf("\tNode Type: %s\n", this->mesh_config.setRoot ? "Root" : "General");
     serial->printf("\tNode ID: %lu\n", this->node_id);
     serial->printf("\tGenerated Mesh SSID: %s\n", this->mesh_config.ssid.c_str());
     serial->printf("\tGenerated Mesh Password: %s\n", this->mesh_config.password.c_str());

@@ -4,13 +4,9 @@
 // #include "mesh.hpp"
 
 #define LED_ANIMATE_DELAY 300
-#define NUM_LED 5
 #define LED_PIN 10
-#define VERSION "2.0.0"
-#define IS_ROOT_NODE false
 #define BAUD_RATE 115200
 #define NV_STORE_ON_SET true
-//
 #define DELAYED_BOOT_START 5000
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
@@ -19,6 +15,15 @@ void processLightingOnMessageReceive(JsonDocument &received_serial_mesh_json);
 void sendMeshMessageCallback(JsonDocument &stringified_json_mesh);
 
 void pathLighting();
+
+
+#if defined(ROOT_NODE)
+    #define IS_ROOT_NODE true
+#else 
+    #define IS_ROOT_NODE false
+#endif
+
+
 
 // Class Instantiation
 Scheduler user_scheduler;
@@ -50,11 +55,16 @@ Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
                          { serial_interface->processSerial(); });
 
 // Root Node Task
-// Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
-//                            { Serial.printf("Node Count: %d\n", mesh->getNodesCount()); });
 
-// Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
-//                             { Serial.println(mesh->getTopology(true)); });
+#if defined(ROOT_NODE)
+
+Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
+                           { Serial.printf("Node Count: %d\n", mesh->getNodesCount()); });
+
+Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
+                            { Serial.println(mesh->getTopology(true)); });
+
+#endif
 
 Task task_path_lighting(TASK_IMMEDIATE, TASK_ONCE, &pathLighting);
 
@@ -101,11 +111,13 @@ void setup()
 
     user_scheduler.addTask(task_path_lighting);
 
-    // user_scheduler.addTask(auto_dump_esp_counter);
-    // auto_dump_esp_counter.enable();
+    #if defined(ROOT_NODE)
+    user_scheduler.addTask(auto_dump_esp_counter);
+    auto_dump_esp_counter.enable();
 
-    // user_scheduler.addTask(auto_dump_esp_topology);
-    // auto_dump_esp_topology.enable();
+    user_scheduler.addTask(auto_dump_esp_topology);
+    auto_dump_esp_topology.enable();
+    #endif
 }
 
 void loop()

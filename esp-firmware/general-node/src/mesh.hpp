@@ -37,7 +37,7 @@ private:
 
 public:
     /**
-     * @brief The node ID of the mesh network
+     * @brief Starts painlessMesh.
      */
     void init();
 

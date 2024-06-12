@@ -3,12 +3,21 @@
 #include <painlessMesh.h>
 #include "mesh.hpp"
 
+/**
+ * @brief Serial Interface Class
+ *
+ * Private Members:
+ * - `serial` : A pointer to the HardwareSerial object
+ * - `mesh` : A pointer to the Mesh object
+ * - `nodeId` : The node ID of the current node
+ *
+ *
+ */
 class SerialInterface
 {
 private:
     HardwareSerial *serial;
     Mesh *mesh;
-    uint32_t nodeId;
     NodeConfig *nodeConfig;
 
     /**

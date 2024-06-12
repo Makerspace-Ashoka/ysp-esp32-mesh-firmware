@@ -155,9 +155,9 @@ private:
     String nv_store_namespace = "node_config";
 
 
-    String default_base_ssid = "whatyoulike";
-    String default_base_password = "somethingsneaky";
-    uint8_t default_room_id = 0;
+    String default_base_ssid = DEFAULT_BASE_SSID;
+    String default_base_password = DEFAULT_BASE_PASSWORD;
+    uint8_t default_room_id = ROOM_NUMBER;
 
 public:
     uint32_t node_id;

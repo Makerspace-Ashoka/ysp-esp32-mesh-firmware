@@ -32,80 +32,101 @@
 
 using namespace std;
 
-/*
- * Config related to painless mesh
- */
-
 #if defined(ARDUINO_XIAO_ESP32C3)
 #define HardwareSerial HWCDC
 #endif
 
+/**
+ * @brief Mesh Configuration
+ * The `MeshConfig` class is defining a configuration structure for a mesh network setup. It includes the following members:
+ * 
+ * - `ssid` : The SSID of the mesh network
+ * - `password` : The password of the mesh network
+ * - `port` : The port number of the mesh network
+ * - `containsRoot` : A boolean flag to check if the mesh network contains a root node
+ * - `setRoot` : A boolean flag to set the root node
+ * - `scheduler` : A pointer to the scheduler instance
+ */
+
 class MeshConfig
 {
 public:
-    /*
-     * The SSID of the mesh network
-     */
     String ssid;
 
-    /*
-     * The password of the mesh network
-     */
     String password;
 
-    /*
-     * The port of the mesh network
-     */
     uint16_t port;
-    /*
-     * Whether the mesh network contains a root node
-     */
+
     bool containsRoot;
 
-    /*
-     * Set if this is the root node
-     */
     bool setRoot;
 
-    /*
-     * Scheduler Instance to be used by the mesh network
-     */
     Scheduler *scheduler;
 };
 
+
+/**
+ * @brief Light Configuration
+ * The `LightConfig` class is defining a configuration structure for the light setup. It includes the following members:
+ * 
+ * - `effect_speed` : The speed of the light effect
+ * - `led_pin` : The pin number of the LED
+ * - `led_count` : The count of the LEDs on the NeoPixel strip
+ */
 class LightConfig
 {
 public:
-    /*
-     * To Be Defined Exactly
-     */
     uint8_t effect_speed;
-    /*
-     * NeoPixel Pin number
-     */
+
     uint8_t led_pin;
-    /*
-     * NeoPixel Pin number
-     */
+
     uint8_t led_count;
 };
 
+/**
+ * @brief UART Configuration
+ * The `UART_Config` class is defining a configuration structure for the UART setup. It includes the following members:
+ * 
+ * - `serial` : A pointer to the HardwareSerial object
+ */
 class UART_Config
 {
 public:
     HardwareSerial *serial;
 };
 
-/*
- * Contains all info that might vary from node to node ( ssid, number of led's etc)
+/**
+ * @brief Room Configuration
+ * The `RoomConfig` class is defining a configuration structure for the room setup. It includes the following members:
+ * 
+ * - `id` : The ID of the room
  */
-
 class RoomConfig
 {
 public:
     uint8_t id;
 };
 
+
+/**
+ * @brief Node Configuration
+ * The `NodeConfig` class is defining a configuration structure for the node setup. It includes the following public members:
+ * 
+ * - `node_id` : The ID of the node
+ * - `version` : The version of the node
+ * - `room_config` : The room configuration
+ * - `mesh_config` : The mesh configuration
+ * - `light_config` : The light configuration
+ * - `serial_config` : The UART configuration
+ * - `nv_store_on_set` : A boolean flag to store the configuration in the EEPROM on set operation for base network credentials and room ID
+ * - `prefs` : A pointer to the Preferences object
+ * - `base_ssid` : The SSID of the base network
+ * - `base_password` : The password of the base network
+ * - `default_base_ssid` : The default SSID of the base network
+ * - `default_base_password` : The default password of the base network
+ * - `default_room_id` : The default ID of the room
+ * - `nv_store_namespace` : The namespace of the non-volatile store
+ */
 class NodeConfig
 {
 private:
@@ -113,54 +134,42 @@ private:
 
     vector<String> getWirelessCredentialsFromRoomId();
     Preferences *prefs;
-
     String base_ssid;
     String base_password;
 
     /**
-     * @brief Loads the Saved Config Values from the EEPROM, If not found sets the default values
-     *
+     * @brief Loads the saved configuration from the EEPROM or sets the default configuration
+     * 
      */
     void loadSavedConfigOrSetDefault();
 
+    /**
+     * @brief Generates the wireless credentials from the Room ID and the Base Network Credentials and sets them
+     * 
+     */
     void setWirelessCredentials();
+
+    /** 
+     * @brief Namespace for the non-volatile store.
+    */
+    String nv_store_namespace = "node_config";
+
 
     String default_base_ssid = "whatyoulike";
     String default_base_password = "somethingsneaky";
     uint8_t default_room_id = 0;
 
-    /**
-     * @brief
-     *
-     */
-    String nv_store_namespace = "node_config";
-
 public:
     uint32_t node_id;
-    /*
-     * Version Number of the Program
-     * TODO: AutoGenerate
-     */
+
     String version;
-    /*
-     * Room Config
-     */
+
     RoomConfig room_config;
-    /*
-     * Mesh Config
-     */
+
     MeshConfig mesh_config;
 
-    /*
-     * LED Config
-     * NeoPixel Related Config
-     */
     LightConfig light_config;
 
-    /*
-     * Serial Config
-     * All user config variables pertaining to serial communication bit ( Baud Rate, etc)
-     */
     UART_Config serial_config;
 
     /**
@@ -176,14 +185,42 @@ public:
      */
     uint32_t getNodeId();
 
+    /**
+     * @brief Set the Room Id object
+     *
+     * @param room_id
+     */
     void setRoomId(uint8_t room_id);
 
+    /**
+     * @brief Get the Room Id object
+     *
+     * @return uint8_t room_id
+     */
     uint8_t getRoomId();
 
+    /**
+     * @brief Set the Base Network Credentials object
+     *
+     * @param base_ssid
+     * @param base_password
+     */
     void setBaseNetworkCredentials(String base_ssid, String base_password);
 
+    /**
+     * @brief Get the Base Network Credentials object
+     *
+     * @return vector<String> base_network_credentials
+     */
     vector<String> getBaseNetworkCredentials();
 
+    /**
+     * @brief Set the Wireless Credentials object
+     * Note : These are generated from the Room ID and the Base Network Credentials
+     *
+     * @param ssid
+     * @param password
+     */
     vector<String> getWirelessCredentials();
 
     /**
@@ -204,13 +241,7 @@ public:
     bool load();
 
     /**
-     * @brief Reset the config to default values
-     *
-     */
-    void resetToDefault();
-
-    /**
-     * @brief  Logs the current state of the config
+     * @brief  Logs the current state of the config on the Serial Monitor
      *
      */
     void logConfig();

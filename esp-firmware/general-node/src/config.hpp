@@ -36,6 +36,12 @@ using namespace std;
 #define HardwareSerial HWCDC
 #endif
 
+
+#if defined(ARDUINO_ESP32S3)
+#define HardwareSerial HWCDC
+#endif
+
+
 /**
  * @brief Mesh Configuration
  * The `MeshConfig` class is defining a configuration structure for a mesh network setup. It includes the following members:

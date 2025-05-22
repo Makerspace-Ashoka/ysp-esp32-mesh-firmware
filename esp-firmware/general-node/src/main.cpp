@@ -87,7 +87,9 @@ void setup()
         prefs.clear();
     }
 
+
     config = new NodeConfig(IS_ROOT_NODE, user_scheduler, LED_PIN, NUM_LED, Serial, VERSION, prefs, NV_STORE_ON_SET);
+
     mesh = new Mesh(*config);
     serial_interface = new SerialInterface(*config, *mesh);
     serial_interface->setSendMessageCallable(&sendMeshMessageCallback);

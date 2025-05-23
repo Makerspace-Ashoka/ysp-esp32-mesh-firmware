@@ -2,6 +2,8 @@
 #include "serial_interface.hpp"
 #include "lighting.hpp"
 // #include "mesh.hpp"
+#include "display.hpp"
+
 
 #define LED_ANIMATE_DELAY 300
 #define LED_PIN 10
@@ -32,6 +34,7 @@ NodeConfig *config;
 Mesh *mesh;
 SerialInterface *serial_interface;
 Lighting *lighting;
+Display *display;
 
 /*
     -using TaskCallback and TaskOnDisable-
@@ -54,6 +57,8 @@ Task task_log_config(TASK_IMMEDIATE, TASK_ONCE, []()
 Task task_process_serial(TASK_IMMEDIATE, TASK_FOREVER, []()
                          { serial_interface->processSerial(); });
 
+                         
+
 // Root Node Task
 
 #if defined(ROOT_NODE)
@@ -63,6 +68,10 @@ Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
 
 Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
                             { Serial.println(mesh->getTopology(true)); });
+        
+Task task_display_update(TASK_IMMEDIATE, TASK_FOREVER, []() {
+    display -> update();
+});
 
 #endif
 
@@ -94,6 +103,8 @@ void setup()
     serial_interface = new SerialInterface(*config, *mesh);
     serial_interface->setSendMessageCallable(&sendMeshMessageCallback);
     lighting = new Lighting(*config, *mesh);
+    display = new Display(*config,*mesh);
+
 
     delay(100);
 
@@ -119,6 +130,11 @@ void setup()
 
     user_scheduler.addTask(auto_dump_esp_topology);
     auto_dump_esp_topology.enable();
+
+    display -> init();  // Initialize the display before updating it
+    user_scheduler.addTask(task_display_update);
+    task_display_update.enable();
+
     #endif
 }
 

@@ -7,15 +7,15 @@
 
 class Display {
 public:
-    Display(NodeConfig &config, Mesh &mesh);
+    Display();
 
-    void init();
+    void init(NodeConfig &config, Mesh &mesh);
     void update();
 
 private:
     Mesh *mesh;
     TFT_eSPI tft;
-    int roomid;
+    int roomId;
 };
 
 #endif // DISPLAY_HPP

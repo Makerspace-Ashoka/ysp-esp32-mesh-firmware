@@ -1,21 +1,28 @@
 #include "display.hpp"
 #include <Arduino.h>
 
-Display::Display(NodeConfig &config, Mesh &mesh) : tft(TFT_eSPI()), mesh(&mesh) {
-    roomid = config.getRoomId();
+
+
+
+Display::Display() {
+    // Constructor implementation can be empty or initialize members if needed
 }
 
-void Display::init() {
-    tft.init();
-    tft.setRotation(1);
-    tft.fillScreen(TFT_BLACK);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    tft.setTextSize(2);
+void Display::init(NodeConfig &config, Mesh &mesh) {
+    this->roomId = config.getRoomId();
+    this->mesh = &mesh;
+    this->tft.init();
+    this->tft.setRotation(1);
+    this->tft.fillScreen(TFT_BLACK);
+    this->tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    this->tft.setTextSize(2);
+    this->tft.drawString("Display Initialized", 10, 10);
+    this->tft.setCursor(10, 30);
+    this->tft.printf("Room ID: %d\n", this->roomId);
 }
 
-void Display::update() { // Clear previous screen content
-    tft.setCursor(10, 10);
-    tft.println("Room ID: " + String(roomid));
-    tft.setCursor(10, 30);
-    tft.println("Node Count: " + String(mesh->getNodesCount()));  // replace with actual function if different
+
+void Display::update() {
+    // Clear previous screen content
+
 }

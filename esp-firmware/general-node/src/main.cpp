@@ -1,7 +1,6 @@
 #include "config.hpp"
 #include "serial_interface.hpp"
 #include "lighting.hpp"
-// #include "mesh.hpp"
 #include "display.hpp"
 
 
@@ -10,6 +9,7 @@
 #define BAUD_RATE 115200
 #define NV_STORE_ON_SET true
 #define DELAYED_BOOT_START 5000
+#define DISPLAY_UPDATE_DELAY 500 // milliseconds
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
 void processLightingOnMessageReceive(JsonDocument &received_serial_mesh_json);
@@ -34,7 +34,7 @@ NodeConfig *config;
 Mesh *mesh;
 SerialInterface *serial_interface;
 Lighting *lighting;
-Display *display;
+Display display;
 
 /*
     -using TaskCallback and TaskOnDisable-
@@ -69,8 +69,8 @@ Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
 Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
                             { Serial.println(mesh->getTopology(true)); });
         
-Task task_display_update(TASK_IMMEDIATE, TASK_FOREVER, []() {
-    display -> update();
+Task task_display_update(DISPLAY_UPDATE_DELAY, TASK_FOREVER, []() {
+    display.update();
 });
 
 #endif
@@ -103,8 +103,6 @@ void setup()
     serial_interface = new SerialInterface(*config, *mesh);
     serial_interface->setSendMessageCallable(&sendMeshMessageCallback);
     lighting = new Lighting(*config, *mesh);
-    display = new Display(*config,*mesh);
-
 
     delay(100);
 
@@ -131,7 +129,7 @@ void setup()
     user_scheduler.addTask(auto_dump_esp_topology);
     auto_dump_esp_topology.enable();
 
-    display -> init();  // Initialize the display before updating it
+    display.init(*config, *mesh);
     user_scheduler.addTask(task_display_update);
     task_display_update.enable();
 

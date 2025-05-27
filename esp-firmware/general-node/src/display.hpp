@@ -18,6 +18,7 @@ private:
     Mesh *mesh;
     TFT_eSPI tft;
     int roomId;
+    bool isRoot;
 };
 
 #endif // DISPLAY_HPP

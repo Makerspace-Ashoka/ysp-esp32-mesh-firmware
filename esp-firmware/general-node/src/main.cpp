@@ -1,7 +1,10 @@
 #include "config.hpp"
 #include "serial_interface.hpp"
 #include "lighting.hpp"
-#include "display.hpp"
+
+#ifdef ARDUINO_LILYGO_T_DISPLAY_S3 
+    #include "display.hpp"
+#endif
 
 
 #define LED_ANIMATE_DELAY 300
@@ -34,8 +37,10 @@ NodeConfig *config;
 Mesh *mesh;
 SerialInterface *serial_interface;
 Lighting *lighting;
-Display display;
 
+#ifdef ARDUINO_LILYGO_T_DISPLAY_S3 
+    Display display;
+#endif
 /*
     -using TaskCallback and TaskOnDisable-
     Positional Arguments:
@@ -69,10 +74,13 @@ Task auto_dump_esp_counter(TASK_SECOND * 5, TASK_FOREVER, []()
 Task auto_dump_esp_topology(TASK_SECOND * 5, TASK_FOREVER, []()
                             { Serial.println(mesh->getTopology(true)); });
         
+
+#endif
+
+#ifdef ARDUINO_LILYGO_T_DISPLAY_S3
 Task task_display_update(DISPLAY_UPDATE_DELAY, TASK_FOREVER, []() {
     display.update();
 });
-
 #endif
 
 Task task_path_lighting(TASK_IMMEDIATE, TASK_ONCE, &pathLighting);
@@ -129,10 +137,12 @@ void setup()
     user_scheduler.addTask(auto_dump_esp_topology);
     auto_dump_esp_topology.enable();
 
-    display.init(*config, *mesh);
-    user_scheduler.addTask(task_display_update);
-    task_display_update.enable();
+    #endif
 
+    #ifdef ARDUINO_LILYGO_T_DISPLAY_S3
+        display.init(*config, *mesh);
+        user_scheduler.addTask(task_display_update);
+        task_display_update.enable();
     #endif
 }
 
@@ -145,10 +155,12 @@ void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_
 {
     JsonDocument received_serial_mesh_json;
     deserializeJson(received_serial_mesh_json, received_stringified_mesh_json);
-    // Update display with the received message data
-    display.lastFromNode = received_serial_mesh_json["payload"]["from_node_id"].as<String>();
-    display.lastToNode = received_serial_mesh_json["payload"]["to_node_id"].as<String>();
-    
+    #ifdef ARDUINO_LILYGO_T_DISPLAY_S3
+        // Update display with the received message data
+        display.lastFromNode = received_serial_mesh_json["payload"]["from_node_id"].as<String>();
+        display.lastToNode = received_serial_mesh_json["payload"]["to_node_id"].as<String>();
+    #endif
+
     serial_interface->displayLiveMessage(received_serial_mesh_json);
     processLightingOnMessageReceive(received_serial_mesh_json);
 }

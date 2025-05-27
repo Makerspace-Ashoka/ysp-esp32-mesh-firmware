@@ -10,6 +10,7 @@ Display::Display() {
 
 void Display::init(NodeConfig &config, Mesh &mesh) {
     this->roomId = config.getRoomId();
+    this->isRoot = config.mesh_config.setRoot;
     this->mesh = &mesh;
     this->lastFromNode = -1; // Initialize to -1 to indicate no messages received yet
     this->lastToNode = -1; // Initialize to -1 to indicate no messages sent yet
@@ -21,6 +22,8 @@ void Display::init(NodeConfig &config, Mesh &mesh) {
     this->tft.drawString("Display Initialized", 10, 10);
     this->tft.setCursor(10, 30);
     this->tft.printf("Room ID: %d\n", this->roomId);
+    this->tft.setCursor(10, 50);
+    this->tft.printf("Node Type: %s\n", this->isRoot ? "Root" : "General");
     delay(2000); // Delay to allow the display to show the initialization message
     this->tft.fillScreen(TFT_BLACK);
 
@@ -30,13 +33,16 @@ void Display::init(NodeConfig &config, Mesh &mesh) {
 
 void Display::update() {
     this->tft.setCursor(10,10);
-    this->tft.println("Room ID: "+String(roomId));
+    this->tft.println("Node Type: " + String(this->isRoot ? "Root" : "General"));
     this->tft.setCursor(10, 30);
-    this->tft.println("Node Count: " + String(this->mesh->getNodesCount()));
+    this->tft.println("Room ID: "+ String(roomId));
     this->tft.setCursor(10, 50);
-    this->tft.println("Last Msg From: " + String(this->lastFromNode));
+    this->tft.println("Node Count: " + String(this->mesh->getNodesCount()));
     this->tft.setCursor(10, 70);
+    this->tft.println("Last Msg From: " + String(this->lastFromNode));
+    this->tft.setCursor(10, 90);
     this->tft.println("Last Msg To: " + String(this->lastToNode));
+    
     this->tft.setCursor(10, 150);
     this->tft.printf("Free Heap: %d", ESP.getFreeHeap());
     

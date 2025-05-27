@@ -11,6 +11,8 @@ public:
 
     void init(NodeConfig &config, Mesh &mesh);
     void update();
+    String lastFromNode;
+    String lastToNode;
 
 private:
     Mesh *mesh;

@@ -9,7 +9,7 @@
 #define BAUD_RATE 115200
 #define NV_STORE_ON_SET true
 #define DELAYED_BOOT_START 5000
-#define DISPLAY_UPDATE_DELAY 500 // milliseconds
+#define DISPLAY_UPDATE_DELAY 33 // milliseconds ~30fps
 
 void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_json);
 void processLightingOnMessageReceive(JsonDocument &received_serial_mesh_json);
@@ -145,6 +145,10 @@ void onReceiveCallback(uint32_t from_node_id, String &received_stringified_mesh_
 {
     JsonDocument received_serial_mesh_json;
     deserializeJson(received_serial_mesh_json, received_stringified_mesh_json);
+    // Update display with the received message data
+    display.lastFromNode = received_serial_mesh_json["payload"]["from_node_id"].as<String>();
+    display.lastToNode = received_serial_mesh_json["payload"]["to_node_id"].as<String>();
+    
     serial_interface->displayLiveMessage(received_serial_mesh_json);
     processLightingOnMessageReceive(received_serial_mesh_json);
 }

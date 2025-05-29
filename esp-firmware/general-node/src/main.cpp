@@ -91,6 +91,10 @@ void setup()
 
     ulong start_time = millis();
 
+    #ifdef ARDUINO_LILYGO_T_DISPLAY_S3
+        display.boot();
+    #endif
+
     while ((millis() - start_time) < DELAYED_BOOT_START)
     {
         Serial.printf(". ");

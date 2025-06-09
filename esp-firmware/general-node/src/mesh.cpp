@@ -2,9 +2,7 @@
 
 void Mesh::init()
 {
-
     this->mesh.setDebugMsgTypes(ERROR | DEBUG);
-
     if (this->config->containsRoot)
     {
         this->mesh.setContainsRoot(true);
@@ -15,7 +13,10 @@ void Mesh::init()
         this->mesh.setRoot(true);
     }
 
-    this->mesh.init(this->config->ssid.c_str(), this->config->password.c_str(), this->config->scheduler);
+    // this->mesh.init(this->config->ssid.c_str(), this->config->password.c_str(), this->config->scheduler, this->config->port, WIFI_AP_STA);
+
+    this->mesh.init(this->config->ssid.c_str(), this->config->password.c_str(), this->config->scheduler, this->config->port, WIFI_AP_STA, this->config->channel, 0, 10);
+
     this->nodeConfig->setNodeId(this->mesh.getNodeId());
 }
 

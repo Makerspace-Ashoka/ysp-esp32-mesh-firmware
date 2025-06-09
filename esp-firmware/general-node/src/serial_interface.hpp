@@ -41,6 +41,14 @@ private:
      */
     void setBaseNetworkCredentials(JsonDocument &incoming_serial_json);
 
+    /**
+     * @brief Set the Wireless Network Channels in the Node Config
+     * 
+     * @param incoming_serial_json
+     */
+    void setWirelessChannel(JsonDocument &incoming_serial_json);
+
+
     //  GETTERS     //
 
     /**
@@ -63,6 +71,14 @@ private:
      * @param incoming_serial_json
      */
     void getBaseNetworkCredentials(JsonDocument &incoming_serial_json);
+
+    /**
+     * @brief Get the Wireless Channel Band
+     * 
+     * @param incoming_serial_json
+     * 
+     */
+    void getWirelessChannel(JsonDocument &incoming_serial_json);
 
     /**
      * @brief Wrapper to send the response back to the serial interface against the incoming commands

@@ -18,6 +18,12 @@
                 "cmd": "get-room-id",
                 "room_id": "0"
             }
+        },
+        {
+            "payload_type": "cmd",
+            "payload": {
+                "cmd": "get-wireless-channel"
+            }
         }
     ],
     "setters": [
@@ -38,6 +44,16 @@
                 "room_id": "0"
             }
         },
+        // Set Wireless Channel
+        {
+            "payload_type": "cmd",
+            "payload": {
+                "cmd": "set-wireless-channel",
+                "wireless_channel": 1
+            }
+        },
+
+
         // Ping Node ( Send Message )
         {
             "payload_type": "cmd",

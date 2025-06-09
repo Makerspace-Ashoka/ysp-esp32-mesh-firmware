@@ -81,10 +81,38 @@ void SerialInterface::setBaseNetworkCredentials(JsonDocument &incoming_serial_js
     this->sendResponse(response_serial_json, incoming_serial_json_payload);
 }
 
+void SerialInterface::setWirelessChannel(JsonDocument &incoming_serial_json_payload)
+{
+    uint8_t new_wireless_channel = int(incoming_serial_json_payload["payload"]["wireless_channel"]);
+
+    JsonDocument response_serial_json;
+    bool success = false;
+
+    // Validate the wireless channel range (1–11)
+    if (new_wireless_channel >= 1 && new_wireless_channel <= 11) {
+        this->nodeConfig->setWirelessChannel(new_wireless_channel);
+        success = (this->nodeConfig->getWirelessChannel() == new_wireless_channel);
+    } else {
+        response_serial_json["error"] = "Invalid wireless channel. Supported range: 1–11.";
+    }
+    response_serial_json["success"] = success;
+    response_serial_json["wireless_channel"] = new_wireless_channel;
+
+    this->sendResponse(response_serial_json, incoming_serial_json_payload);
+}
+
 void SerialInterface::getRoomId(JsonDocument &incoming_serial_json_payload)
 {
     JsonDocument response_serial_json;
     response_serial_json["room_id"] = this->nodeConfig->getRoomId();
+
+    this->sendResponse(response_serial_json, incoming_serial_json_payload);
+}
+
+void SerialInterface::getWirelessChannel(JsonDocument &incoming_serial_json_payload)
+{
+    JsonDocument response_serial_json;
+    response_serial_json["wireless_channel"] = this->nodeConfig->getWirelessChannel();
 
     this->sendResponse(response_serial_json, incoming_serial_json_payload);
 }
@@ -161,6 +189,14 @@ void SerialInterface::processSerial()
         else if (incoming_serial_json["payload"]["cmd"] == "esp-reset")
         {
             ESP.restart();
+        }
+        else if (incoming_serial_json["payload"]["cmd"] == "get-wireless-channel")
+        {
+            this->getWirelessChannel(incoming_serial_json);
+        }
+        else if (incoming_serial_json["payload"]["cmd"] == "set-wireless-channel")
+        {
+            this->setWirelessChannel(incoming_serial_json);
         }
         else
         {

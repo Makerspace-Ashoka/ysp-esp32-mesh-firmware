@@ -61,6 +61,8 @@ public:
 
     bool setRoot;
 
+    uint8_t channel;
+
     Scheduler *scheduler;
 };
 
@@ -192,6 +194,20 @@ public:
      */
     void setRoomId(uint8_t room_id);
 
+    /**
+     * @brief Set the Network Channel object
+     *
+     * @param channel
+     */
+    void setWirelessChannel(uint8_t channel);
+
+    /**
+     * @brief Get the Wireless Channel object
+     *
+     * @return uint8_t channel
+     */
+    uint8_t getWirelessChannel();
+    
     /**
      * @brief Get the Room Id object
      *

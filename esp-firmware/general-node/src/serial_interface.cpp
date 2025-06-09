@@ -84,11 +84,17 @@ void SerialInterface::setBaseNetworkCredentials(JsonDocument &incoming_serial_js
 void SerialInterface::setWirelessChannel(JsonDocument &incoming_serial_json_payload)
 {
     uint8_t new_wireless_channel = int(incoming_serial_json_payload["payload"]["wireless_channel"]);
-    this->nodeConfig->setWirelessChannel(new_wireless_channel);
 
     JsonDocument response_serial_json;
-    bool success = (this->nodeConfig->getWirelessChannel() == new_wireless_channel);
+    bool success = false;
 
+    // Validate the wireless channel range (1–11)
+    if (new_wireless_channel >= 1 && new_wireless_channel <= 11) {
+        this->nodeConfig->setWirelessChannel(new_wireless_channel);
+        success = (this->nodeConfig->getWirelessChannel() == new_wireless_channel);
+    } else {
+        response_serial_json["error"] = "Invalid wireless channel. Supported range: 1–11.";
+    }
     response_serial_json["success"] = success;
     response_serial_json["wireless_channel"] = new_wireless_channel;
 

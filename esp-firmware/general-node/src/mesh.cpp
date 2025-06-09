@@ -2,11 +2,7 @@
 
 void Mesh::init()
 {
-
     this->mesh.setDebugMsgTypes(ERROR | DEBUG);
-
-    
-
     if (this->config->containsRoot)
     {
         this->mesh.setContainsRoot(true);

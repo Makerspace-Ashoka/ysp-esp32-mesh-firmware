@@ -49,7 +49,7 @@
             "payload_type": "cmd",
             "payload": {
                 "cmd": "set-wireless-channel",
-                "channel": 1
+                "wireless_channel": 1
             }
         },
 

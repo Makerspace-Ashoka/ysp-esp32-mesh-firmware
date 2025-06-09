@@ -46,7 +46,7 @@ void NodeConfig::loadSavedConfigOrSetDefault()
     this->room_config.id = prefs->getInt("room_id", this->default_room_id);
     this->base_ssid = prefs->getString("base_ssid", this->default_base_ssid);
     this->base_password = prefs->getString("base_password", this->default_base_password);
-    this->mesh_config.channel = prefs->getInt("wireless_channel", 1);
+    this->mesh_config.channel = prefs->getInt("wifi_channel", 1);
 }
 
 void NodeConfig::setRoomId(uint8_t room_id)
@@ -68,6 +68,11 @@ uint8_t NodeConfig::getRoomId()
 void NodeConfig::setWirelessChannel(uint8_t channel)
 {
     this->mesh_config.channel = channel;
+
+    if (this->nv_store_on_set)
+    {
+        this->save();
+    }
 }
 
 uint8_t NodeConfig::getWirelessChannel()
@@ -130,9 +135,9 @@ bool NodeConfig::save()
         failed_to_save.push_back("base_password");
     }
 
-    if (!prefs->putInt("wireless_channel", this->mesh_config.channel))
+    if (!prefs->putInt("wifi_channel", this->mesh_config.channel))
     {
-        failed_to_save.push_back("wireless_channel");
+        failed_to_save.push_back("wifi_channel");
     }
 
     if (failed_to_save.size() > 0)
@@ -159,12 +164,12 @@ void NodeConfig::logConfig()
     serial->printf("\tBase SSID: %s\n", this->base_ssid.c_str());
     serial->printf("\tBase Password: %s\n", this->base_password.c_str());
     serial->printf("\tRoom ID: %d\n", this->room_config.id);
+    serial->printf("\tWireless Channel: %d\n", this->mesh_config.channel);
     serial->printf("\n\t# Loaded from Program Space\n");
     serial->printf("\tNode Type: %s\n", this->mesh_config.setRoot ? "Root" : "General");
     serial->printf("\tNode ID: %lu\n", this->node_id);
     serial->printf("\tGenerated Mesh SSID: %s\n", this->mesh_config.ssid.c_str());
     serial->printf("\tGenerated Mesh Password: %s\n", this->mesh_config.password.c_str());
-    serial->printf("\tWireless Channel: %d\n", this->mesh_config.channel);
     serial->printf("\tLED Count: %d\n", this->light_config.led_count);
     serial->printf("\tLED Pin: %d\n", this->light_config.led_pin);
     serial->printf("\tVersion: %s\n", this->version.c_str());

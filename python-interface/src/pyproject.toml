@@ -1,0 +1,13 @@
+[project]
+name = "Makerspace_YSP_TDCS_MESH_PYTHON_INTERFACE"
+version = "2025.2"
+description = "Makerspace YSP TDCS Sessions - Python Interface"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "colorama==0.4.6",
+    "pyserial==3.5"
+]
+
+[tool.uv]
+python-preference = "only-managed"

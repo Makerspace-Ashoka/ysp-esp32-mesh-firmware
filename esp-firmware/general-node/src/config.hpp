@@ -160,6 +160,7 @@ private:
     String default_base_ssid = DEFAULT_BASE_SSID;
     String default_base_password = DEFAULT_BASE_PASSWORD;
     uint8_t default_room_id = ROOM_NUMBER;
+    uint8_t default_wireless_channel = WIRELESS_CHANNEL;
 
 public:
     uint32_t node_id;

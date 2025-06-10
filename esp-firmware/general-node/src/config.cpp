@@ -46,7 +46,7 @@ void NodeConfig::loadSavedConfigOrSetDefault()
     this->room_config.id = prefs->getInt("room_id", this->default_room_id);
     this->base_ssid = prefs->getString("base_ssid", this->default_base_ssid);
     this->base_password = prefs->getString("base_password", this->default_base_password);
-    this->mesh_config.channel = prefs->getInt("wifi_channel", 1);
+    this->mesh_config.channel = prefs->getInt("wifi_channel", this->default_wireless_channel);
 }
 
 void NodeConfig::setRoomId(uint8_t room_id)
